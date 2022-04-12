@@ -1,0 +1,44 @@
+{
+    "reccur_data": [
+        {   "reccur_val": "week",
+            "frequency": "WEEKLY"
+        },
+
+        {
+            "reccur_val": "month",
+            "frequency": "MONTHLY"
+        },
+
+        {
+            "reccur_val": "day",
+            "frequency": "DAILY"
+        },
+        {
+            "reccur_val": "year",
+            "frequency": "YEARLY"
+        },
+        {
+            "reccur_val": "other day",
+            "frequency": "DAILY",
+            "interval": 2
+
+        },
+        {
+            "reccur_val": "other week",
+            "frequency": "WEEKLY",
+            "interval": 2
+        },
+        {
+            "reccur_val": "other year",
+            "frequency": "YEARLY",
+            "interval": 2
+        },
+        {
+            "reccur_val": "other month",
+            "frequency": "MONTHLY",
+            "interval": 2
+        }
+
+    ]
+
+}

@@ -1,0 +1,15 @@
+method,url,usage,intent,scope,entity_value,tag
+GET,https://api.spotify.com/v1/me/player/recently-played,Get the Current User's Recently Played Tracks,spotify_player,read_playback_state,recently-played,RECENT
+GET,https://api.spotify.com/v1/me/player,Get Information About The User's Current Playback,spotify_player,read_playback_state,information,PLAYER
+GET,https://api.spotify.com/v1/me/player/devices,Get a User's Available Devices,spotify_player,read_playback_state,devices,DEVICES
+GET,https://api.spotify.com/v1/me/player/currently-playing,Get the User's Currently Playing Track,spotify_player,read_playback_state,currently-playing,CURRENT
+POST,https://api.spotify.com/v1/me/player/next,Skip User's Playback To Next Track,spotify_player,modify_playback_state,next,NEXT
+POST,https://api.spotify.com/v1/me/player/previous,Skip User's Playback To Previous Track,spotfiy_player,modify_playback_state,previous,PREVIOUS
+POST,https://api.spotify.com/v1/me/player/queue,Add an item to the end of the user's current playback queue,spotfiy_player,modify_playback_state,queue,QUEUE
+PUT,https://api.spotify.com/v1/me/player/pause,Pause a User's Playback,spotfiy_player,modify_playback_state,pause,PAUSE
+PUT,https://api.spotify.com/v1/me/player/play,Start/Resume a User's Playback,spotfiy_player,modify_playback_state,play start resume,PLAY
+PUT,https://api.spotify.com/v1/me/player/repeat,Set Repeat Mode On User's Playback,spotfiy_player,modify_playback_state,repeat,REPEAT
+PUT,https://api.spotify.com/v1/me/player/seek,Seek To Position In Currently Playing Track,spotfiy_player,modify_playback_state,seek,SEEK
+PUT,https://api.spotify.com/v1/me/player/shuffle,Toggle Shuffle For User's Playback,spotfiy_player,modify_playback_state,shuffle,SHUFFLE
+PUT,https://api.spotify.com/v1/me/player,Transfer a User's Playback,spotfiy_player,modify_playback_state,transfer,TRANSFER
+PUT,https://api.spotify.com/v1/me/player/volume,Set Volume For User's Playback,spotfiy_player,modify_playback_state,volume,VOLUME

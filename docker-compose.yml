@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  alfred-mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  alfred-api:
+    build: 
+      context: .
+    depends_on:
+      - alfred-mongo
+    ports:
+      - "5000:5000"
+    environment:
+      - PYWIKIBOT_DIR=/usr/src/projectAlfred/alfred/models/api_models/
+      - MONGO_IP=mongodb://alfred-mongo:27017/
+      - FLASK_APP=alfred.alfred_api
+
+    
+
+       
