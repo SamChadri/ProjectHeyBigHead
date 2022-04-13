@@ -45,6 +45,8 @@ RUN pip3 install azure-cognitiveservices-search-websearch
 RUN pip3 install pywikibot
 RUN pip3 install google-api-python-client
 RUN pip3 install dateparser
+RUN pip3 install "wikitextparser>=0.47.5"
+RUN pip3 install google_auth_oauthlib
 
 RUN echo 'export PYWIKIBOT_DIR="/Users/BEATFREAK/busyWork/projectAflred/alfred/models/api_models/"' >> ~/.bashrc
 RUN echo 'export MONGO_DB="mongodb://alfred-mongo:27017/"' >> ~/.bashrc

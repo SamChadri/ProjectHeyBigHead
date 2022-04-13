@@ -21,4 +21,3 @@ alfred/.intent_cache/
 alfred/data/container_data/
 alfred/data/deepspeech-0.6.1-models.tar.gz
 alfred/data/deepspeech-0.6.1-models/lm.binary
-alfred_tests/

@@ -12,15 +12,16 @@ TAG = "SportsAPI:"
 
 sportsdb_endpoint = "https://www.thesportsdb.com/api/v1/json/2/eventslast.php?id={}"
 
-msf_nba_teamEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nba/2020-playoff/team_gamelogs.json?team={}"
-msf_nba_boxEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nba/2020-playoff/game_boxscore.json?gameid={}"
+msf_nba_teamEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nba/latest/scoreboard.json?team={}"
+msf_nba_boxEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nba/latest/scoreboard.json?gameid={}"
 
-msf_nfl_teamEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nfl/2020-regular/team_gamelogs.json?team={}"
-msf_nfl_boxEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nfl/2020-regular/game_boxscore.json?gameid={}"
+msf_nfl_teamEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/scoreboard.json?team={}"
+msf_nfl_boxEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/scoreboard.json?gameid={}"
 #TODO: Deal with spaces edge case for team names. And if it cannot find match in sports league.
 #TODO: Deal with 76'ers edge case
 #TODO: Edge case for when games are canceled/postponed. Fill in Score with something else.
 
+#TODO: Figure out how to get the difference between playoff and regular seaon, and switch between seasons
 
 #TODO: Remeber to set the APIStore db when using this API
 class SportsAPI:
