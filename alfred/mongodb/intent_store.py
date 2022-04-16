@@ -535,6 +535,8 @@ class IntentStore:
             'cached': False
         }
         #TODO Expand this later.
+        #TODO Add: Day at Time
+        #TODO add teenth to the dates
         calendar_date_entity = {
             'entity': cls.intent_constants.calendar_date_entity,
             'entity_values': [

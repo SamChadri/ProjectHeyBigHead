@@ -12,11 +12,12 @@ TAG = "SportsAPI:"
 
 sportsdb_endpoint = "https://www.thesportsdb.com/api/v1/json/2/eventslast.php?id={}"
 
-msf_nba_teamEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nba/latest/scoreboard.json?team={}"
-msf_nba_boxEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nba/latest/scoreboard.json?gameid={}"
 
-msf_nfl_teamEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/scoreboard.json?team={}"
-msf_nfl_boxEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/scoreboard.json?gameid={}"
+msf_nba_teamEndpoint = 'https://api.mysportsfeeds.com/v1.2/pull/nba/latest/full_game_schedule.json'
+msf_nba_boxEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nba/latest/scoreboard.json"
+
+msf_nfl_teamEndpoint = 'https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/full_game_schedule.json'
+msf_nfl_boxEndpoint = "https://api.mysportsfeeds.com/v1.2/pull/nfl/latest/scoreboard.json"
 #TODO: Deal with spaces edge case for team names. And if it cannot find match in sports league.
 #TODO: Deal with 76'ers edge case
 #TODO: Edge case for when games are canceled/postponed. Fill in Score with something else.
@@ -56,7 +57,9 @@ class SportsAPI:
     def last_game(self, team):
         team_data = {}
         try:
-           retval = self.msf_getLastGame(team)
+            #Commented for testing purposes
+            #self.set_league(team)
+            retval = self.msf_getLastGame(team)
         except Exception as e:
             logging.error(TAG + "MySportsFeed endpoint failed to retrieve data with error: {}. Trying SportsDB endpoint.... ".format(e))
 
@@ -82,16 +85,21 @@ class SportsAPI:
             team_data = self.storage.get_nfl_team(team)
 
         try:
-            team_response= requests.get(self.team_endpoint.format(team_data["name_short"]), auth=(self.msf_key, self.msf_password))
+            team_response= requests.get(self.team_endpoint,params={"date":"from-5-months-ago-to-yesterday","team":team_data["name_short"]}, auth=(self.msf_key, self.msf_password))
             if team_response.status_code != 200:
                 raise Exception("API endpoint request failed with status code: " + str(team_response.status_code))
             logging.info(TAG + "MSF request for {} returned successfully with status code: ".format(team) + str(team_response.status_code))
             #pprint(team_response.json()['teamgamelogs'])
-            team_data = team_response.json()["teamgamelogs"]["gamelogs"]
+            
+            if "game_entry" not in team_response.json()["fullgameschedule"]:
+                pass
+                #TODO check the last regular season here
             #pprint(team_data)
-            game_id = team_data[-1]['game']['id']
+            last_game = team_response.json()["fullgameschedule"]["gameentry"][-1]
 
-            game_response = requests.get(self.box_endpoint.format(game_id), auth=(self.msf_key, self.msf_password))
+            game_date = last_game['date'].replace('-','')
+
+            game_response = requests.get(self.box_endpoint,params={"fordate":game_date,"team":team_data["name_short"]}, auth=(self.msf_key, self.msf_password))
 
             if game_response.status_code != 200:
                 raise Exception("API endpoint request failed with status code: " + str(team_response.status_code))
@@ -103,10 +111,10 @@ class SportsAPI:
             raise Exception(TAG + "RequestException error occurred: " + str(e))
 
         else:
-            data = game_response.json()["gameboxscore"]
+            data = game_response.json()['scoreboard']['gameScore'][0]
             game_data = {}
             #pprint(data)
-            game_data["game_id"] = game_id
+            game_data["game_id"] = data['game']['ID']
             #TODO Fixed time key, rebuild image
             game_data["game_time"] = data["game"]["time"]
             game_data["away_team"] = data["game"]["awayTeam"]["City"] + ' ' + data["game"]["awayTeam"]["Name"]
@@ -121,10 +129,9 @@ class SportsAPI:
                 game_data["away_logo"] = self.storage.get_nfl_team(game_data["away_team"])["team_logo"]
 
             game_data["game_name"] = game_data["home_team"] + " vs. " + game_data["away_team"]
-            game_data["home_score"] = data["quarterSummary"]["quarterTotals"]["homeScore"]
-            game_data["away_score"] = data["quarterSummary"]["quarterTotals"]["awayScore"]
+            game_data["home_score"] = data["homeScore"]
+            game_data["away_score"] = data["awayScore"]
             game_data["game_quarters"] = []
-            
             for quarter in data["quarterSummary"]["quarter"]:
                 entry = {}
                 entry["quarter_number"] = quarter["@number"]

@@ -19,6 +19,7 @@ from dateutil.parser import *
 from dateparser import parse
 from pprint import pprint
 
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -288,7 +289,7 @@ class GoogleCalendarAPI:
                 end_date = start_date + timedelta(hours=1)
             else:
                 start_date = parse(calendar_date, settings={'PREFER_DATES_FROM': 'future', 'RELATIVE_BASE': datetime(self.curr_year,self.curr_month,self.curr_day,0,0)}).astimezone()
-                start_date = start_date + timedelta(hours=17)
+                #start_date = start_date + timedelta(hours=17)
                 end_date = start_date + timedelta(hours=1)
 
         else:

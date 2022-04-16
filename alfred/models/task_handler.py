@@ -4,6 +4,7 @@ from alfred.mongodb.intent_data import *
 from alfred.models.task import Message
 from alfred.models.event_tasks import *
 from concurrent.futures import *
+from pprint import pformat
 
 TAG = "TaskHandler: "
 
@@ -30,7 +31,7 @@ class TaskHandler:
             task  = self.generate_task(message)
             task.action()
             response = task.response()
-            logging.debug(TAG + f"Alfred API result: {response}")
+            logging.debug(TAG + f"Alfred API result: {pformat(response)}")
             #task.generate_speech()
             queue.task_done()
             return response

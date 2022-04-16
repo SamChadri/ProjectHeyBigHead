@@ -527,6 +527,10 @@ class CalendarTask(Task):
                 event_type = self.result['event_type']
                 event_date = self.result['start_date'].strftime("%B %d, %Y")
                 event_time = self.result['start_date'].strftime("%I:%M")
+
+                self.result['start_date'] = str(self.result['start_date'])
+                self.result['end_date'] = str(self.result['end_date'])
+
                 self.response_message = self.response_message.format(event_type,event_date, event_time)
                 return {'message' : self.response_message, 'result': self.result, 'intent': self.message.intent, 'id': self.id}
 
