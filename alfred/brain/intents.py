@@ -56,8 +56,9 @@ class Intents:
             self.data_store.set_entity_cached(entity_data["entity"], True)
         logging.debug(TAG + "Finished generating containers")
     def train_containers(self):
+        #TODO Check this out later...
         for container in self.container_dict.values():
-            container.train()
+            container.train(timeout=40)
 
     #TODO differentiate between sports cities. Ex. Who won the last Chicago game?
     def get_best_result(self, data):
@@ -82,7 +83,7 @@ class Intents:
 
 
     def train_intents(self):
-        self.container.train()
+        self.container.train(timeout=40)
         logging.debug(TAG + 'Trained intents')
 
     #TODO maybe keep this in the matcher format?

@@ -10,6 +10,7 @@ from googleapiclient.discovery import build
 import json
 from datetime import datetime, timedelta
 import dateutil
+import dateparser
 
 
 #TODO: Possibly run this in a container due to environment installs
@@ -522,6 +523,256 @@ def test_calendar_intent_time_1(client):
     calendar_api = build('calendar', 'v3', credentials=creds, cache_discovery=False)
 
     calendar_api.events().delete(calendarId='primary', eventId=id).execute()
+
+def test_calendar_intent_time_2(client):
+    token_file = os.path.abspath("alfred/data/token.json")
+    assert os.path.exists(token_file) == True
+
+
+    test_time = dateparser.parse("Friday",settings={'PREFER_DATES_FROM': 'future',})
+    request_string = f"Schedule a meeting called Wanker to my calendar on Friday between 11:30AM and 12:30PM"
+    response = client.post('/text_req', data=dict(
+        req_text=request_string
+    ))
+    json_data = response.get_json()
+    assert "response_data" in json_data
+
+    intent = json_data["response_data"][0]
+
+    assert "message" in intent
+    assert "result" in intent
+    assert "intent" in intent
+    assert "id" in intent
+    
+
+    calendar_data = intent["result"]
+
+    assert "calendar_event" in calendar_data
+    assert "event_type" in calendar_data
+    assert "start_date" in calendar_data
+    assert "end_date" in calendar_data
+
+    start_date = dateutil.parser.parse(calendar_data["start_date"])
+    end_date = dateutil.parser.parse(calendar_data["end_date"])
+
+    assert start_date.month == test_time.month
+    assert start_date.year == test_time.year
+    assert start_date.day == test_time.day
+
+    assert start_date.hour == 11
+    assert start_date.minute == 30
+
+    assert end_date.month == test_time.month
+    assert end_date.year == test_time.year
+    assert end_date.day == test_time.day
+
+    assert end_date.hour == 12
+    assert end_date.minute == 30
+
+
+    calendar_event = calendar_data["calendar_event"]
+
+    assert "id" in calendar_event
+
+    id = calendar_event["id"]
+
+
+    with open(token_file) as file:
+        data = json.load(file)
+
+    creds = google.oauth2.credentials.Credentials(data["google_access_token"],
+        refresh_token=data["google_refresh_token"],
+        token_uri=data["google_refresh_uri"],
+        client_id=data["google_client_id"],
+        client_secret=data["google_client_secret"])
+    
+    calendar_api = build('calendar', 'v3', credentials=creds, cache_discovery=False)
+
+    calendar_api.events().delete(calendarId='primary', eventId=id).execute()
+
+def test_calendar_intent_query(client):
+    token_file = os.path.abspath("alfred/data/token.json")
+    assert os.path.exists(token_file) == True
+
+#------------ADD FIRST TEST EVENT---------------------------
+    request_string = "Add an event to my calendar"
+    response = client.post('/text_req', data=dict(
+        req_text=request_string
+    ))
+    json_data = response.get_json()
+    assert "response_data" in json_data
+
+    intent = json_data["response_data"][0]
+
+
+    assert "message" in intent
+    assert "result" in intent
+    assert "intent" in intent
+    assert "id" in intent
+    
+    calendar_data = intent["result"]
+
+
+    calendar_event = calendar_data["calendar_event"]
+
+    assert "id" in calendar_event
+
+    id_1 = calendar_event["id"]
+
+#------------ADD SECOND TEST EVENT-------------------------------
+    request_string = "Add an event to my calendar on Sunday "
+    response = client.post('/text_req', data=dict(
+        req_text=request_string
+    ))
+    json_data = response.get_json()
+    assert "response_data" in json_data
+
+    intent = json_data["response_data"][0]
+
+
+    assert "message" in intent
+    assert "result" in intent
+    assert "intent" in intent
+    assert "id" in intent
+    
+    calendar_data = intent["result"]
+
+
+    calendar_event = calendar_data["calendar_event"]
+
+    assert "id" in calendar_event
+
+    id_2 = calendar_event["id"]
+
+#-----------------------------------------------------------------
+
+    request_string = "When is my second event"
+    response = client.post('/text_req', data=dict(
+        req_text=request_string
+    ))
+    json_data = response.get_json()
+    assert "response_data" in json_data
+
+    intent = json_data["response_data"][0]
+
+
+    assert "message" in intent
+    assert "result" in intent
+    assert "intent" in intent
+    assert "id" in intent
+
+    assert intent["intent"] == "calendar"
+
+    calendar_data = intent["result"]
+
+    assert 'event_num' in calendar_data
+    assert calendar_data['event_num'] == 2
+
+    assert 'event_type' in calendar_data
+    assert calendar_data['event_type'] == 'event'
+
+    assert 'events' in calendar_data
+
+    assert 'init_query_time' in calendar_data
+
+    assert 'query' in calendar_data
+    assert 'query_date' in calendar_data
+
+
+
+    with open(token_file) as file:
+        data = json.load(file)
+
+    creds = google.oauth2.credentials.Credentials(data["google_access_token"],
+        refresh_token=data["google_refresh_token"],
+        token_uri=data["google_refresh_uri"],
+        client_id=data["google_client_id"],
+        client_secret=data["google_client_secret"])
+    
+    calendar_api = build('calendar', 'v3', credentials=creds, cache_discovery=False)
+
+    calendar_api.events().delete(calendarId='primary', eventId=id_1).execute()
+
+    calendar_api.events().delete(calendarId='primary', eventId=id_2).execute()
+
+
+
+def test_calendar_intent_update(client):
+    token_file = os.path.abspath("alfred/data/token.json")
+    assert os.path.exists(token_file) == True
+
+#------------ADD FIRST TEST EVENT---------------------------
+    request_string = "Add an event to my calendar"
+    response = client.post('/text_req', data=dict(
+        req_text=request_string
+    ))
+    json_data = response.get_json()
+    assert "response_data" in json_data
+
+    intent = json_data["response_data"][0]
+
+
+    assert "message" in intent
+    assert "result" in intent
+    assert "intent" in intent
+    assert "id" in intent
+    
+    calendar_data = intent["result"]
+
+
+    calendar_event = calendar_data["calendar_event"]
+
+    assert "id" in calendar_event
+
+    id_1 = calendar_event["id"]
+
+#--------------------------------------------------------------
+
+    request_string = "Update my next event location to Scrotal Recall"
+    response = client.post('/text_req', data=dict(
+        req_text=request_string
+    ))
+    json_data = response.get_json()
+    assert "response_data" in json_data
+
+    intent = json_data["response_data"][0]
+
+
+    assert "message" in intent
+    assert "result" in intent
+    assert "intent" in intent
+    assert "id" in intent
+
+    assert intent["intent"] == "calendar"
+
+    calendar_data = intent["result"]
+
+    assert 'calendar_param' in calendar_data
+    assert calendar_data['calendar_param'] ==  'location'
+
+    assert 'calendar_update' in calendar_data
+    assert calendar_data['calendar_update'] == 'Scrotal Recall'
+
+    assert 'updated_event' in calendar_data
+
+
+    with open(token_file) as file:
+        data = json.load(file)
+
+    creds = google.oauth2.credentials.Credentials(data["google_access_token"],
+        refresh_token=data["google_refresh_token"],
+        token_uri=data["google_refresh_uri"],
+        client_id=data["google_client_id"],
+        client_secret=data["google_client_secret"])
+    
+    calendar_api = build('calendar', 'v3', credentials=creds, cache_discovery=False)
+
+    calendar_api.events().delete(calendarId='primary', eventId=id_1).execute()
+
+
+
+
+
 
 
 

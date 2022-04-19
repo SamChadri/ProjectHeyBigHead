@@ -450,23 +450,24 @@ class IntentStore:
             #Ex. Instead of "What is my next event" -> "What is my next calendar event" or something like that
         #TODO remove calendar_update_parameters
         #TODO For date paramters, add option for relative dates instead of exact dates when creating new event.
+        #TODO Add naming parameters.
         frequency_extension = '(| every {calendar_frequency}(| for {calendar_frequency_num} (occurrences|weeks|months|years)))'
         options_extension = '(| and set the {calendar_param} to {calendar_update})'
         calendar_intent = {
              'intent': cls.intent_constants.calendar_intent,
              'intent_values': [
-                 '{calendar_query} (a|an) {event_type} to my calendar'+ frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} to my calendar with {calendar_attendee}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} to my calendar (on|at) {calendar_date}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} to my calendar with {calendar_attendee} (at|on) {calendar_date}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} to my calendar (on|at) {calendar_date} between {start_time} and {end_time}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} to my calendar with {calendar_attendee} on {calendar_date} between {start_time} and {end_time}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} called {event_title} to my calendar' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} called {event_title} to my calendar with {calendar_attendee}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} called {event_title} to my calendar (on|at) {calendar_date}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} called {event_title} to my calendar with {calendar_attendee} (on|at) {calendar_date}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} called {event_title} to my calendar (on|at) {calendar_date} between {start_time} and {end_time}' + frequency_extension + options_extension,
-                 '{calendar_query} (a|an) {event_type} called {event_title} to my calendar with {calendar_attendee} (on|at) {calendar_date} between {start_time} and {end_time}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} (to|on) my calendar'+ frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} (to|on) my calendar with {calendar_attendee}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} (to|on) my calendar {calendar_date}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} (to|on) my calendar with {calendar_attendee} {calendar_date}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} (to|on) my calendar {calendar_date} between {start_time} and {end_time}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} (to|on) my calendar with {calendar_attendee} {calendar_date} between {start_time} and {end_time}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} called {event_title} (to|on) my calendar' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} called {event_title} (to|on) my calendar with {calendar_attendee}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} called {event_title} (to|on) my calendar {calendar_date}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} called {event_title} (to|on) my calendar with {calendar_attendee} {calendar_date}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} called {event_title} (to|on) my calendar {calendar_date} between {start_time} and {end_time}' + frequency_extension + options_extension,
+                 '{calendar_query} (a|an) {event_type} called {event_title} (to|on) my calendar with {calendar_attendee} {calendar_date} between {start_time} and {end_time}' + frequency_extension + options_extension,
                  '{calendar_query} my {event_num}(|for|on) {calendar_date}(|(with|at) {calendar_search})',
                  '{calendar_query} my {event_num} {event_type}(| {calendar_param} to {calendar_update})',
                  '{calendar_query} my {event_num} {event_type}(| for| on) {calendar_date}(| {calendar_param} to {calendar_update})',
@@ -480,6 +481,7 @@ class IntentStore:
              'entity': cls.intent_constants.calendar_task_entity,
              'entity_values': [
                  'Add',
+                 'Create',
                  'Schedule',
                  'When is',
                  "When's",
@@ -498,10 +500,12 @@ class IntentStore:
             'entity': cls.intent_constants.calendar_event_entity,
             'entity_values':[
                 'meeting',
-                'event'
+                'event',
+                'appointment'
             ],
             'cached': False
         }
+        #TODO: Have not done next # yet.
 
         calendar_num_entity = {
              'entity': cls.intent_constants.calendar_num_entity,
@@ -537,16 +541,27 @@ class IntentStore:
         #TODO Expand this later.
         #TODO Add: Day at Time
         #TODO add teenth to the dates
+        #TODO Edit the tommorow 
         calendar_date_entity = {
             'entity': cls.intent_constants.calendar_date_entity,
             'entity_values': [
-                '(Monday|Tuesday|Wenesday|Thursday|Friday|Saturday|Sunday|Today|Tommorow|Yesterday)',
-                '(January|February|March|April|May|June|July|August|September|October|November|December) (#|##)',
-                '(January|February|March|April|May|June|July|August|September|October|November|December) (#|##) ####',
-                ':0( # ####| ## ####| #| ##|) at (#|##|##:##|#:##)(PM|AM|am|pm| PM| AM| am| pm)',
-                ':0 :0( # ####| ## ####| #| ##|) at (#|##|##:##|#:##)(PM|AM|am|pm| PM| AM| am| pm)',
-                '(#|##|##:##|#:##)(PM|AM|am|pm| PM| AM| am| pm) on :0( # ####| ## ####| #| ##|)',
-                '(#|##|##:##|#:##)(PM|AM|am|pm| PM| AM| am| pm) on :0 :0( # ####| ## ####| #| ##)'
+                'on Monday',
+                'on Tuesday',
+                'on Wednesday',
+                'on Thusday',
+                'on Friday',
+                'on Saturday',
+                'on Sunday',
+                'tommorow',
+                'yesterday',
+                'the day after tommorow',
+                'on (Monday|Tuesday|Wenesday|Thursday|Friday|Saturday|Sunday|Today|Tommorow|Yesterday)(| the( # ####| ## ####| #| ##|) at (#|##|##:##|#:##)(am|pm| am| pm))',
+                'on (January|February|March|April|May|June|July|August|September|October|November|December) (#|##)',
+                'on (January|February|March|April|May|June|July|August|September|October|November|December) (#|##) ####',
+                'on :0( # ####| ## ####| #| ##|) at (#|##|##:##|#:##)(am|pm| am| pm)',
+                'on :0 :0( # ####| ## ####| #| ##|) at (#|##|##:##|#:##)(am|pm| am| pm)',
+                'at (#|##|##:##|#:##)(am|pm| am| pm) on :0( # ####| ## ####| #| ##|)',
+                'at (#|##|##:##|#:##)(am|pm| am| pm) on :0 :0( # ####| ## ####| #| ##)'
             ],
             'cached': False
         }
@@ -642,13 +657,13 @@ class IntentStore:
 
         calendar_start_time_entity = {
             'entity': cls.intent_constants.calendar_start_time_entity,
-            'entity_values':['(#|##)(PM|AM|am|pm)'],
+            'entity_values':['(#|##|##:##|#:##)(PM|AM|am|pm)'],
             'cached': False
         }
 
         calendar_end_time_entity = {
             'entity': cls.intent_constants.calendar_end_time_entity,
-            'entity_values': ['(#|##)(PM|AM|am|pm)'],
+            'entity_values': ['(#|##|##:##|#:##)(PM|AM|am|pm)'],
             'cached': False
         }
         #TODO If this gets big enough seperate add and remove values

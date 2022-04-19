@@ -363,10 +363,10 @@ class GoogleCalendarAPI:
             event_type = 'Event'
         elif 'event_title' not in kwargs and 'event_type' in kwargs:
             self.__event['summary'] = kwargs['event_type']
-            event_type = kwargs['event_type']
+            self.__event['description'] = kwargs['event_type']
         else:
             self.__event['summary'] = 'Alfred Calendar Event'
-            event_type = kwargs = 'Event'
+            self.__event['description'] = 'Event'
 
         pprint(self.__event)
         calendar_event = self.calendar_api.events().insert(calendarId='primary', body=self.__event).execute()
