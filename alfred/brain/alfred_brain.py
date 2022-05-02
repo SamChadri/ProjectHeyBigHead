@@ -2,8 +2,10 @@ from alfred.brain.decipher import Decipher
 from alfred.models.task_handler import TaskHandler
 from alfred.models.task import *
 from alfred.brain.intents import Intents
+from alfred.mongodb.intent_store_m2 import *
 import logging
 import json
+
 
 logger = logging.getLogger('alfred_logger')
 logging.basicConfig(level=logging.DEBUG)
@@ -17,9 +19,11 @@ class AlfredBrain:
         self.intents = Intents()
         self.req_handler = TaskHandler()
         #self.intents.load_intents()
-        self.intents.generate_containers()
-        self.intents.train_containers()
-        self.intents.train_intents()
+        #Test Intent store M2
+        self.intent_store = IntentStoreM2()
+        #self.intents.generate_containers()
+        #self.intents.train_containers()
+        #self.intents.train_intents()
         logger.debug("Alfred ready to proccess requests.")
         logging.basicConfig(level=logging.DEBUG)
 

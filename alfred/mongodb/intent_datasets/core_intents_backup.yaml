@@ -1,0 +1,492 @@
+name: hello_intent
+type: intent
+utterances:
+- Hey
+- Hey how is it going
+- Hey Alfred
+- Hello Alfred
+- Hi there
+- Howdy
+- Hello
+---
+name: goodbye_intent
+type: intent
+utterances:
+- See you
+- Bye
+- Goodbye
+- See you later.
+---
+name: hay_intent
+type: intent
+utterances:
+- How are you
+- What is up
+- What is happening
+- What is going on Alfred
+- What is happening Alfred
+- How are you Alfred
+- What is up
+- What is going on
+---
+name: search_intent
+slots:
+- entity: web_query
+  name: recipe
+- entity: web_query
+  name: web_query
+- entity: web_query
+  name: piture
+- entity: web_query
+  name: video
+type: intent
+utterances:
+- Search the web for [web_query:web_query]
+- Search the web for the [web_query:web_query]
+- Google [web_query:web_query]
+- Show me pictures of [picture:web_query]
+- Search the web for pictures of [picutre:web_query]
+- Perform a Google search for [web_query:web_query]
+- Search for videos of [video:web_query]
+- Perform a Bing search for [web_query:web_query]
+- Do a Google search for pictures of [picture:web_query]
+- Perform a Bing search for [web_query:web_query]
+- Show me videos of [video:web_query]
+- Search the web for videos of [video:web_query]
+---
+name: web_query
+type: entity
+values:
+- - How to style curtain bangs
+  - How to donate to Australian bushfires
+  - How to cut men's hair at home
+- - Kobe Bryant
+  - Shakira
+  - Adele
+- - NBA
+  - AMC
+  - NBC
+  - Netflix
+  - Tesla
+- - Apple Stock
+  - Microsoft Stock
+  - FaceBook Stock
+- - Wants and Needs by Drake
+  - drivers license by Olivia Rodrigo
+  - Easy on Me by Adele
+  - All Too Well by Taylor Swift
+- - Boston Red Sox
+  - Los Angeles Lakers
+  - Milwaukee Bucks
+  - Phoenix Suns
+- - Kim and Kanye
+  - Taylor Swift and Jake Gyllenhall
+  - JLo and A-Rod
+  - Selena Gomez and Chris Evans
+- - Among Us
+  - Resident Evil Village
+  - Forza Horizon 5
+  - Valheim
+- - Sourdogh Bread
+  - Whipped coffee
+  - Disney churro
+  - Dole whip
+  - Healthy banana bread
+---
+name: sports_intent
+slots:
+- entity: event_type
+  name: event_type
+- entity: snips/datetime
+  name: date
+- entity: team
+  name: team
+type: intent
+utterances:
+- Who won the [event_type] [team](Chicago Bulls) game
+- Who won the [team](Lakers) game on [date]
+- Who won the [team](Bears) game [date]
+- When is the next [event_type] [team] game
+- Who was the winner of the [event_type] [team] game
+- Who was the winner of the [team](Chelsea F.C.) game [date]
+- Who was the winner of the [team](Chicago White Sox) game on [date]
+- What was the score of [event_type] [team] game
+- What was the score of the [event_type] [team] game
+- What was the final score of the [event_type] [team] game
+- What was the score of the [event_type] [team] game
+- What was the final score of [event_type] [team] game
+- How did the [team] do on [date]
+- How did the [team] do [event_type] game
+- Did the [team](Yankees) win on [date]
+- Did the [team] win their [event_type] game
+- How did the [team] do during the [event_type] game
+---
+name: event_type
+type: entity
+values:
+- - last
+  - last night's
+- most recent
+- latest
+- yesterday's
+- During the playoffs
+- During the regular season
+- two games ago
+- first round of the playoffs
+- second round of the playoffs
+- semi-finals
+- championship game
+- world cup
+- quarter-finals
+- superbowl
+---
+name: wiki_intent
+slots:
+- entity: wiki_query
+  name: wiki_query
+type: intent
+utterances:
+- What is a [wiki_query](clarinet)
+- What is [wiki_query](Hip-Hop music)
+- What is an [wikQuery](enigma)
+- Tell me more about [wiki_query]
+- Tell me about [wiki_query](puzzles)
+- What's a [wiki_query]
+- Show me what a [wiki_query](piano) is
+- Display a [wiki_query](map of europe) for me
+---
+name: celeb_intent
+slots:
+- entity: celeb_query
+  name: celeb_query
+type: intent
+utterances:
+- Who is [celeb_query](Bryson Tiller)
+- Show me information about [celeb_query](Drake)
+- Pull up information about [celeb_query](Thomas Edward Patrick Brady Jr.)
+---
+name: entertainment_intent
+slots:
+- entity: title_query
+  name: title_query
+- entity: ent_type
+  name: ent_type
+type: intent
+utterances:
+- What is the [ent_type] of [title_query](Avengers)
+- Tell me the [ent_type] of [title_query](Suicide Squad)
+- Pull up the [ent_type] of [title_query](The Night Clerk)
+- What's the [ent_type] of [title_query](On the Rocks)
+- Show me the [ent_type] of [title_query](The Matrix Resurrections)
+- Who is the [ent_type] of [title_query]
+- Who are the [ent_type] of [title_query]
+- Who is [title_query]'s [title_query]
+- What is [title_query]'s [title_query]
+- Show me [title_query]'s [title_query]
+- Who [ent_type] [title_query]
+---
+name: ent_type
+type: entity
+values:
+- - rating
+  - classifiction
+- - director
+  - directed
+  - directs
+- - cast
+  - lineup
+- - plot
+  - synopsis
+- - writer
+  - writes
+- genre
+---
+name: weather_intent
+slots:
+- entity: city
+  name: weather_location
+- entity: snips/date
+  name: weather_date
+type: intent
+utterances:
+- What is the weather like
+- What is the weather in [weather_location]
+- How is the weather in [weather_location]
+- How is the temperature in [weather_location]
+- What is the temperature in [weather_location]
+- What's the temperature in [weather_location]
+- What's the weather in [weather_location]
+- What is the temperature outside
+- How is the temperature outside
+- What is the forecast outside
+- What is the weather [weather_date]
+- What is the weather on [weather_date]
+- What is we weather like on [weather_date]
+- How is the weather on [weather_date] in [weather_location]
+- What is the weather in [weather_location] on [weather_date]
+- How is the weather in [weather_location] on [weather_date]
+- What's the temperature on [weather_date] in [weather_location]
+- What is the weather on [weather_date] in [weather_location]
+- What is the forecast on [weather_date] in [weather_location]
+- What is the forecast in [weather_location] on [weather_date]
+- What is the temperature in [weather_location] on [weather_date]
+- What is the temperature on [weather_date] in [weather_location]
+---
+name: city
+type: entity
+values:
+- London
+- Paris
+- Toronto
+- - Los Angeles
+  - L.A.
+- - New York
+  - city of lights
+- - Chicago
+  - Chiraq
+  - Chi-Town
+- Nairobi
+- Dublin
+- Tokyo
+- Istanbul
+- Bangkok
+- Mexico City
+- Shanghai
+- Rome
+- Madrid
+- Amsterdam
+- Berlin
+---
+name: time_intent
+slots:
+- entity: city
+  name: time_location
+type: intent
+utterances:
+- What time is it
+- What time is it in [time_location]
+- When is sunrise
+- What's the time in [time_location]
+- When is sunset
+- When is the sunrise
+- What's the time
+- Tell me the time in [time_location]
+- Show me the time in [time_location]
+- Let me know the time in [time_location]
+- Tell me the time
+- Show me the time
+---
+name: map_intent
+slots:
+- entity: location_query
+  name: location_query
+- entity: city
+  name: destination_city
+- entity: snips/number
+  name: destination_address
+- entity: destination_street
+  name: destination_street
+- entity: region
+  name: destination_region
+- entity: snips/number
+  name: destination_zipcode
+- entity: country
+  name: destination_country
+- entity: city
+  name: origin_city
+- entity: snips/number
+  name: origin_address
+- entity: origin_street
+  name: origin_street
+- entity: region
+  name: origin_region
+- entity: snips/number
+  name: origin_zipcode
+- entity: country
+  name: origin_country
+- entity: road_type
+  name: road_type
+type: intent
+utterances:
+- What's a good [location_query](sushi) restaurant near me
+- What's the best [location_query](hair salon) near me
+- Give me directions to the nearest [location_query]
+- Get me directions to the nearest [location_query]
+- Show me directions to the nearest [location_query]
+- What's the traffic like to the nearest [location_query]
+- What's the traffic like to [destination_city]
+- What's the traffic like to [destination_address] [destination_street](Wenonah) [road_type]
+- What's the traffic like to [destination_address] [destination_street](Clinton) [road_type],
+  [destination_city], [destination_region]
+- What's the traffic like to [destination_address] [destination_street] [road_type],
+  [destination_zipcode] [destination_region]
+- What's the traffic like to [destination_address] [destination_street] [road_type],
+  [destination_zipcode] [destination_region], [destination_country]
+- Take me to [destination_address] [destination_street] [road_type]
+- Take me to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Take me to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Take me to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region], [destination_country]
+- Give me directions to [destination_address] [destination_street] [road_type]
+- Give me directions to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Give me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Give me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region], [destination_country]
+- Get me directions to [destination_address] [destination_street] [road_type]
+- Get me directions to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Get me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Get me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region], [destination_country]
+- Find me directions to [destination_address] [destination_street] [road_type]
+- Find me directions to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Find me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Find me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region], [destination_country]
+- Show me directions to [destination_address] [destination_street] [road_type]
+- Show me directions to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Show me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Show me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region], [destination_country]
+- Can you get me directions to [destination_address] [destination_street] [road_type]
+- Can you get me directions to [destination_address] [destination_street] [road_type],
+  [destination_city], [destination_region]
+- Can you get me directions to [destination_address] [destination_street] [road_type],
+  [destination_zipcode] [destination_region]
+- Can you get me directions to [destination_address] [destination_street] [road_type],
+  [destination_zipcode] [destination_region], [destination_country]
+- Get me directions from [origin_city] to [destination_city]
+- Get me directions from [origin_address] [origin_street] [road_type] to [destination_address]
+  [destination_street] [road_type]
+- Get me directions from [origin_address] [origin_street] [road_type], [origin_city],
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Get me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Get me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
+  [origin_region], [origin_country] to [destination_address] [destination_street]
+  [road_type], [destination_zipcode] [destination_region], [destination_country]
+- Find me directions from [origin_city] to [destination_city]
+- Find me directions from [origin_address] [origin_street] [road_type] to [destination_address]
+  [destination_street] [road_type]
+- Find me directions from [origin_address] [origin_street] [road_type], [origin_city],
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Find me directions from [origin_address] [origin_street](Ridgeland) [road_type],
+  [origin_zipcode] [origin_region] to [destination_address] [destination_street] [road_type],
+  [destination_zipcode] [destination_region]
+- Find me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
+  [origin_region], [origin_country] to [destination_address] [destination_street]
+  [road_type], [destination_zipcode] [destination_region], [destination_country]
+- Show me directions from [origin_city] to [destination_city]
+- Show me directions from [origin_address] [origin_street] [road_type] to [destination_address]
+  [destination_street] [road_type]
+- Show me directions from [origin_address] [origin_street] [road_type], [origin_city],
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Show me directions from [origin_address] [origin_street](Lake) [road_type], [origin_zipcode]
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Show me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
+  [origin_region], [origin_country] to [destination_address] [destination_street]
+  [road_type], [destination_zipcode] [destination_region], [destination_country]
+- Give me directions from [origin_city] to [destination_city]
+- Give me directions from [origin_address] [origin_street] [road_type] to [destination_address]
+  [destination_street] [road_type]
+- Give me directions from [origin_address] [origin_street](Circle) [road_type], [origin_city],
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Give me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Give me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
+  [origin_region], [origin_country] to [destination_address] [destination_street]
+  [road_type], [destination_zipcode] [destination_region], [destination_country]
+- Can you get me directions from [origin_city] to [destination_city]
+- Can you get me directions from [origin_address] [origin_street](Harlem) [road_type]
+  to [destination_address] [destination_street] [road_type]
+- Can you get me directions from [origin_address] [origin_street] [road_type], [origin_city],
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
+  [destination_region]
+- Can you get me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
+  [origin_region] to [destination_address] [destination_street] [road_type], [destination_zipcode]
+  [destination_region]
+- Can you get me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
+  [origin_region], [origin_country] to [destination_address] [destination_street]
+  [road_type], [destination_zipcode] [destination_region], [destination_country]
+---
+name: country
+type: entity
+values:
+- France
+- - United States
+  - America
+  - U.S.
+- China
+- Spain
+- Italy
+- Turkey
+- Japan
+- United Kingdom
+- Germany
+- Russian Federation
+- Malaysia
+- Mexico
+- Austria
+- Ukraine
+- Thailand
+- Saudi Arabia
+- Greece
+- Canada
+- Poland
+- South Africa
+- Netherlands
+---
+name: region
+type: entity
+values:
+- Illinois
+- California
+- Florida
+- Asia
+- Europe
+- North America
+- South America
+- West Virginia
+- Kent's Heritage Coast
+- Ontario
+- Puerto Rico
+- Shikoku
+- Atacama Dessert
+- The Sceneic Rim
+- Vancouver
+- Burgundy
+---
+name: road_type
+type: entity
+values:
+- - street
+  - st
+- - road
+  - rd
+- - avenue
+  - ave
+- - boulevard
+  - blvd
+- way
+- crescent
+- drive
+- terrace
+- throughfare
+- lane
+- strip

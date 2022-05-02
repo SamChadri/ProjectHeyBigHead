@@ -15,7 +15,7 @@ class Intents:
     def __init__(self, path=intent_path):
         self.path = path
         self.local_storage = IntentData()
-        self.data_store = IntentStore()
+        #self.data_store = IntentStore()
         self.container = IntentContainer(self.path)
         self.container_dict = {}
 

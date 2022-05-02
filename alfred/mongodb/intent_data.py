@@ -3,26 +3,26 @@ from dataclasses import dataclass
 
 @dataclass
 class IntentData:
-    hello_intent : str = "hello"
-    hay_intent : str = "hay"
-    bye_intent : str = "goodbye"
-    query_intent : str = "search"
-    sports_intent : str = "sports"
-    entertainment_intent : str  = "entertainment"
-    celeb_intent : str = "celeb"
-    weather_intent : str = "weather"
-    map_intent : str = "directions"
-    time_intent : str = "time"
-    wiki_intent : str = "wiki"
-    spotify_player_intent : str = "spotify_player"
+    hello_intent : str = "hello_intent"
+    hay_intent : str = "hay_intent"
+    bye_intent : str = "goodbye_intent"
+    query_intent : str = "search_intent"
+    sports_intent : str = "sports_intent"
+    entertainment_intent : str  = "entertainment_intent"
+    celeb_intent : str = "celeb_intent"
+    weather_intent : str = "weather_intent"
+    map_intent : str = "map_intent"
+    time_intent : str = "time_intent"
+    wiki_intent : str = "wiki_intent"
+    spotify_player_intent : str = "spotify_player_intent"
     #TODO maybe divide subintents from the actual intents
     #DB_INTENT
-    spotify_intent : str = 'spotify'
-    calendar_intent: str = 'calendar'
+    spotify_intent : str = 'spotify_intent'
+    calendar_intent: str = 'calendar_intent'
 
 
-    
-    
+
+#-----------------MARK I ENTITIES----------------------------------------------    
 
     event_entity : str = "event_type"
     team_entity : str = "team"
@@ -53,7 +53,17 @@ class IntentData:
     calendar_param_entity: str = "calendar_param"
     calendar_update_entity: str = "calendar_update"
     calendar_frequency_entity: str = "calendar_frequency"
-    calendar_frequency_num_entity: str = "calendar_frequency_num"        
+    calendar_frequency_num_entity: str = "calendar_frequency_num"  
+
+#------------------------MARK II ENTITIES--------------------------------------------
+    web_query_entity: str = "web_query"
+    weather_date_entity: str = "weather_date"
+    time_location_entity: str = "time_location"
+    city_entity:str = "city"
+    country_entity:str = "country"
+    region_entity:str = "region"
+    road_type_entity:str = "road_type"
+
 
 
     def __init__(self):
@@ -106,6 +116,15 @@ class IntentData:
         self.__entity_data[self.calendar_frequency_entity] = "calendar_intents"
         self.__entity_data[self.calendar_frequency_num_entity] = "calendar_intents"
 
+#--------------------------MARK II ENTITY----------------------------------------------------------
+
+        self.__entity_data[self.web_query_entity] = "search_intents"
+        self.__entity_data[self.weather_date_entity] = "weather_intents"
+        self.__entity_data[self.time_location_entity] = "time_intents"
+        self.__entity_data[self.city_entity] = "map_intents"
+        self.__entity_data[self.country_entity] = "map_intents"
+        self.__entity_data[self.region_entity] = "map_intents"
+        self.__entity_data[self.road_type_entity] = "map_intents"
 
 
 
