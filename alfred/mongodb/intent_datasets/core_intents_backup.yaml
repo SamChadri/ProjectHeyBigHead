@@ -119,7 +119,7 @@ utterances:
 - How did the [team] do [event_type] game
 - Did the [team](Yankees) win on [date]
 - Did the [team] win their [event_type] game
-- How did the [team] do during the [event_type] game
+- How did the [team] do during their [event_type] game
 ---
 name: event_type
 type: entity
@@ -256,6 +256,7 @@ values:
 - Madrid
 - Amsterdam
 - Berlin
+- Houston
 ---
 name: time_intent
 slots:
@@ -470,7 +471,6 @@ values:
 - Atacama Dessert
 - The Sceneic Rim
 - Vancouver
-- Burgundy
 ---
 name: road_type
 type: entity

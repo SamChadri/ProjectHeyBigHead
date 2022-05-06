@@ -20,15 +20,23 @@ TAG = "intentStoreM2::"
 
 class IntentStoreM2:
 
+    CORE = "cd"
+    EXPANDED = "ed"
+
     def __init__(self) -> None:
         logging.basicConfig(filename='alfred.log', level=logging.INFO)
         now = datetime.now().time()
         current_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         logging.info('Run DateTime: ' + current_time)
 
-        self.intent_file = os.path.abspath('alfred/mongodb/intent_datasets/core_intents_backup.yaml')
+        #Intent Datasets
+        self.core_intent_file = os.path.abspath('alfred/mongodb/intent_datasets/core_intents_backup.yaml')
+        self.ex_intent_file = os.path.abspath('alfred/mongodb/intent_datasets/expanded_intents_backup.yaml')
         self.intent_constants = IntentData()
         self.init_collections()
+        
+        self.metadata_file = self.create_metadata(self.CORE)
+
         self.api_store = APIStore()        
         self.init_db()
     
@@ -61,7 +69,7 @@ class IntentStoreM2:
         logging.info(f"{TAG} Populating database...")
     
         data : list
-        with open(self.intent_file,'r') as file:
+        with open(self.core_intent_file,'r') as file:
             data = list(yaml.load_all(file, Loader=yaml.FullLoader))
         for document in data:
             collection_name = ""
@@ -80,23 +88,89 @@ class IntentStoreM2:
         }
         self.intent_config.insert_one(init_db)
     
-    def check_updates(self)-> None:
+    def update_job(self) -> None:
+        """This will serve as an async operation for updating the database while the asssitant is running in real time"""
+        pass
+
+    def create_metadata(self, file) -> str:
+        meta_file = os.path.abspath('alfred/mongodb/intent_datasets/{}_meta.json').format(file)
+
+        if os.path.exists(meta_file):
+            return meta_file
+        
+        
+        data_file : str
+        if file == self.CORE:
+            data_file = self.core_intent_file
+        else:
+            data_file = self.ex_intent_file
+
+
+        with open(data_file,'r') as file:
+            data = list(yaml.load_all(file, Loader=yaml.FullLoader))
+        
+        meta_data = []
+        for doc in data:
+            m_index = {}
+            m_index["name"] = doc["name"]
+            m_index["type"] = doc["type"]
+            db_ref: Any
+            if doc["type"] == "intent":
+                db_ref = self.get_intent_values(doc["name"])
+                m_index["file_ut_count"] = len(doc["utterances"])
+                m_index["db_ut_count"] = len(db_ref["utterances"])
+                
+            else:
+                db_ref = self.get_entity_values(doc["name"])
+                m_index["file_vl_count"] = len(doc["values"])
+                m_index["db_vl_count"] = len(db_ref["values"])
+            meta_data.append(m_index)
+        
+        
+        logging.info(f"{TAG} writing metadata to {meta_file}...")
+        with open(meta_file, 'w') as file:
+            json.dump(meta_data, file, indent=4)
+        
+        return meta_file
+                
+        
+            
+
+    
+    def check_updates(self, file=None)-> None:
+        #TODO: Check for deletions next. Do this by creating a metadata and keeping track of that locally and in the database.
         logging.info(f"{TAG} Checking for intent and entity updates....")
 
         update = {
             "database": False,
             "file": False,
+            "meta": False,
         }
 
         data: list 
-        with open(self.intent_file,'r') as file:
+        with open(self.core_intent_file,'r') as file:
             data = list(yaml.load_all(file, Loader=yaml.FullLoader))
+        
+        metadata: list
+        with open(self.metadata_file, 'r') as file:
+            metadata = json.load(file)
+        
         
         data_list = data
         for i in range(len(data_list)):
+
             document = data_list[i]
+
+            updated = False
+            
             d_type = document["type"]
             d_name = document["name"]
+
+            meta_doc : dict
+            for doc in metadata:
+                if d_name == doc["name"]:
+                    meta_doc = doc
+
             db_doc : Any
             colleciton_name :string
             doc_values : List
@@ -106,46 +180,101 @@ class IntentStoreM2:
                 db_doc = self.get_intent_values(d_name)
                 doc_values : List = document["utterances"]
                 db_values : List = db_doc["utterances"]
-                pass
+                file_count = meta_doc["file_ut_count"]
+                db_count = meta_doc["db_ut_count"]
+
+
             else:
                 collection_name = self.intent_constants.get_entity_db(d_name)
                 db_doc = self.get_entity_values(d_name)
                 doc_values : List = document["values"]
                 db_values : List = db_doc["values"]
+                file_count = meta_doc["file_vl_count"]
+                db_count = meta_doc["db_vl_count"]
+
+
                 pass
             
             
-            
+            curr_file_count = len(doc_values)
+            curr_db_count = len(db_values)
+
+            db_change = curr_db_count > db_count
+            not_db_change = curr_db_count < db_count
+            file_change = curr_file_count > file_count  
+            not_file_change = curr_file_count < file_count    
             for item in db_values:
+                               
                 if item not in doc_values:
-                    logging.info(f"{TAG} New intent value:{item} added to the database. Writing to local file for backup...")
-                    doc_values.append(item)
-                    update["file"] = True
-                    if d_type == "intent":
-                        document["utterances"] = doc_values
-                    else:
-                        document["values"] = doc_values
+                    if db_change:
+                        logging.info(f"{TAG} New intent value:'{item}' added to the database. Writing to local file for backup...")
+                        doc_values.append(item)
+                        update["file"] = True
+                        update["meta"] = True
+                        updated = True
+                        if d_type == "intent":
+                            document["utterances"] = doc_values
+                        else:
+                            document["values"] = doc_values
+                    if not_file_change:
+                        logging.info(f"{TAG} Item removed: '{item}' from local file. Writing change to database.... ")
+                        self.delete_intent_value(d_name, item) if d_type == "intent" else self.delete_entity_value(d_name,item)
+                        update["database"] = True
+                        update["meta"] = True
+                        updated = True
+
             
             data_list[i] = document
 
             for item in  doc_values:
                 if item not in db_values:
-                    logging.info(f"{TAG} New intent value:{item} added to the local file. Writing change to database...")
-                    update["database"] = True
-                    if d_type == "intent":
-                        self.add_intent_value(d_name, item)
-                    else:
-                        self.add_entity_value(d_name, item)
+                    if file_change:
+                        logging.info(f"{TAG} New intent value:'{item}' added to the local file. Writing change to database...")
+                        self.add_intent_value(d_name,item) if d_type == "intent" else self.add_entity_value(d_name, item)
+                        update["database"] = True
+                        update["meta"] = True
+                        updated = True
+                    if not_db_change:
+                        logging.info(f"{TAG} Item removed: '{item}' from database. Writing change in local file...")
+                        doc_values.remove(item)
+                        update["file"] = True
+                        update["meta"] = True
+                        updated = True
+                        if d_type == "intent":
+                            document["utterances"] = doc_values
+                        else:
+                            document["values"] = doc_values
+
+
+            if updated:
+                logging.info(f"{TAG} Logging updates to metadata file....")
+                if d_type == "intent":
+                    meta_doc["file_ut_count"] = len(document["utterances"])
+                    meta_doc["db_ut_count"] = len(self.get_intent_values(d_name)["utterances"])
+
+                else:
+                    meta_doc["file_vl_count"] = len(document["values"])
+                    meta_doc["db_vl_count"] = len(self.get_entity_values(d_name)["values"])
+
+                for index in range(len(metadata)):
+                    if d_name == metadata[index]["name"]:
+                        metadata[index] = meta_doc
+
+
 
 
         if update["file"]:
             logging.info(f"{TAG} Finalizing local file store update... ")
-            with open(self.intent_file, 'w') as outfile:
+            with open(self.core_intent_file, 'w') as outfile:
                 yaml.dump_all(data_list, outfile, default_flow_style=False)
-        elif update["database"]:
+        if update["database"]:
             logging.info(f"{TAG} Finalized databse update...")
             pass
-        else:
+        if update["meta"]:
+            logging.info(f"{TAG} Finalizing updates to metadata file....")
+            with open(self.metadata_file, 'w') as outfile:
+                json.dump(metadata, outfile,indent=4)
+        if not update["file"] and update["database"]:
             logging.info(f"{TAG} No changes detected. No updates performed")
 
 
@@ -172,8 +301,18 @@ class IntentStoreM2:
 
         new_val = {"$push" :{"utterances": intent_value}}
         db_name = self.intent_constants.get_intent_db(intent)
-        retval = self.intent_db[db_name].update_one(param, new_val)
+        retval = self.intent_db[db_name].update_one(param, new_val,upsert=True)
         logging.info(f"{TAG} Adding intent value: {intent_value}, to document with id: {retval.upserted_id}")
+        return retval.modified_count
+    
+    def delete_intent_value(self, intent, intent_value) -> Any:
+        param = {}
+        param["name"] = intent
+
+        del_val = {"$pull" :{"utterances": intent_value}}
+        db_name = self.intent_constants.get_intent_db(intent)
+        retval = self.intent_db[db_name].update_one(param, del_val,upsert=True)
+        logging.info(f"{TAG} Removing intent value: {intent_value}, to document with id: {retval.upserted_id}")
         return retval.modified_count
 
     def get_intent_values(self, intent) -> Any :
@@ -203,7 +342,7 @@ class IntentStoreM2:
 
         new_val = {"$push" :{"slots": slot_values}}
         db_name = self.intent_constants.get_intent_db(intent)
-        retval = self.intent_db[db_name].update_one(param, new_val)
+        retval = self.intent_db[db_name].update_one(param, new_val,upsert=True)
         logging.info(f"{TAG} Adding slot value: {slot_values}, to document with id: {retval.upserted_id}")
         return retval.modified_count
     
@@ -226,10 +365,21 @@ class IntentStoreM2:
 
         new_val = {"$push" :{"values": entity_value}}
         db_name = self.intent_constants.get_entity_db(entity)
-        retval = self.intent_db[db_name].update_one(param, new_val)
+        retval = self.intent_db[db_name].update_one(param, new_val,upsert=True)
         logging.info(f"{TAG} Adding entity value: {entity_value}, to document with id: {retval.upserted_id}")
         return retval.modified_count
     
+    def delete_entity_value(self, entity, entity_value) -> Any:
+        param = {}
+        param["name"] = entity
+
+        del_val = {"$pull" :{"values": entity_value}}
+        db_name = self.intent_constants.get_entity_db(entity)
+        retval = self.intent_db[db_name].update_one(param, del_val,upsert=True)
+        logging.info(f"{TAG} Removing entity value: {entity_value}, to document with id: {retval.upserted_id}")
+        return retval.modified_count
+
+
     def get_entity_values(self, entity) -> Any:
         param = {
             "name": entity
@@ -254,7 +404,7 @@ if __name__ == '__main__':
 
 
     logging.debug(TAG + 'Generating json dataset...')
-    yaml_dataset = os.path.abspath("alfred/mongodb/intent_datasets/core_intents.yaml")
+    yaml_dataset = os.path.abspath("alfred/mongodb/intent_datasets/core_intents_backup.yaml")
     json_dataset = os.path.abspath("alfred/mongodb/intent_datasets/core_dataset.json")
 
     os.system(f"snips-nlu generate-dataset en {yaml_dataset} > {json_dataset}")

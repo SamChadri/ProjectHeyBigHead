@@ -11,6 +11,17 @@ class Message:
         self.msg = msg
         self.confidence = confidence 
         self.entities = entities
+        
+    def set_slot_names(self, slots):
+        self.slots = slots
+
+    def check_entity_slot(self, entity) -> str:
+        entity_value = self.entities[entity]
+        for key, val in self.slots:
+            if val == entity_value and key != entity:
+                return key
+        return entity_value
+
 
 
     def set_db_intent(self, db_intent):
@@ -24,7 +35,7 @@ class Message:
         return obj.__dict__
 
     def __str__(self):
-        return json.dumps(self, default=self.convert_object)
+        return json.dumps(self, indent=4, default=self.convert_object)
 
 
 class Task(object):
