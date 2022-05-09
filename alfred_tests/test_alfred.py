@@ -51,7 +51,7 @@ def test_celeb_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "celeb"
+    assert intent["intent"] == "celeb_intent"
 
     celeb_data = intent["result"]
 
@@ -81,7 +81,7 @@ def test_musician_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "celeb"
+    assert intent["intent"] == "celeb_intent"
 
     assert intent["result"]["data_type"] == "musician"
 
@@ -117,7 +117,7 @@ def test_athlete_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "celeb"
+    assert intent["intent"] == "celeb_intent"
 
     assert intent["result"]["data_type"] == "athlete"
 
@@ -154,7 +154,7 @@ def test_entertainment_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "entertainment"
+    assert intent["intent"] == "entertainment_intent"
 
     ent_data = intent["result"]
 
@@ -186,7 +186,7 @@ def test_sports_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "sports"
+    assert intent["intent"] == "sports_intent"
 
     sports_data = intent["result"]
 
@@ -224,7 +224,7 @@ def test_sports_intent_backup(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "sports"
+    assert intent["intent"] == "sports_intent"
 
     sports_data = intent["result"]
 
@@ -254,7 +254,7 @@ def test_weather_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "weather"
+    assert intent["intent"] == "weather_intent"
 
     weather_data = intent["result"]
 
@@ -319,7 +319,7 @@ def test_search_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "search"
+    assert intent["intent"] == "search_intent"
 
     search_data = intent["result"]
 
@@ -347,7 +347,7 @@ def test_direction_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "directions"
+    assert intent["intent"] == "map_intent"
 
     assert "url" in intent["result"]
 
@@ -368,7 +368,7 @@ def test_knowledge_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "wiki"
+    assert intent["intent"] == "wiki_intent"
 
     knowledge_data = intent["result"]
 

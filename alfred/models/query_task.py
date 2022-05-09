@@ -37,8 +37,7 @@ class SportsTask(Task):
 
     def action(self):
         if 'event_type' in self.message.matches and 'team' in self.message.matches:
-            result = 
-
+            pass
 
 
 

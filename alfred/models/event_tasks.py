@@ -16,7 +16,7 @@ from msrest.authentication import CognitiveServicesCredentials
 
 import logging 
 import asyncio
-
+from alfred.mongodb.intent_data import IntentData
 TAG = 'EventTasks: '
 #TODO: Filter out for N/A in response message
 #TODO: Implement device authentication/checker. Something like that
@@ -29,12 +29,21 @@ class QueryTask(Task):
     def __init__(self, message):
         super().__init__(message)
         self.api = SearchAPI()
+        self.intent_data = IntentData()
     
 
-    
+    #TODO: Add in functionality for 
     def action(self):
-        if 'query' in self.message.entities:
-            self.result = self.api.search_request(self.message.entities['query'])
+        if self.intent_data.web_query_entity in self.message.entities:
+            entity = self.message.entities[self.intent_data.web_query_entity]
+            """
+            Implement later when differentiating between slots
+            if self.message.check_entity_slot(entity):
+                pass
+            else:
+                pass
+            """
+            self.result = self.api.search_request(entity)
         else:
             self.result = self.api.search_request(self.message.msg)   
         
@@ -51,17 +60,21 @@ class SportsTask(Task):
         self.response_message = 'The {} defeated the {}. '
         self.score = 'The final score was {} to {}.'
         self.api = SportsAPI()
+        self.intent_data = IntentData()
 
 
     def action(self):
-        if 'team' in self.message.entities and 'event_type' in self.message.entities:
-            if "'" in self.message.entities['team']:
+        if self.intent_data.team_entity in self.message.entities and self.intent_data.event_entity in self.message.entities:
+            team_entity = self.message.entities[self.intent_data.team_entity]
+            if "'" in team_entity:
                 logging.debug("Stripping {}....".format(self.message.entities["team"]))
-                self.message.entities["team"] = self.message.entities["team"].replace("'", '')
+                team_entity = team_entity.replace("'", '')
                 logging.debug("Stripped entites: {}".format(self.message.entities))
             
-            self.api.set_league(self.message.entities['team'])
-            self.result = self.api.last_game(self.message.entities['team'])
+            
+            self.api.set_league(team_entity)
+            #TODO: Add functionality for Dates on games later
+            self.result = self.api.last_game(team_entity)
 
         else:
             self.result = {'error': 'Query type could not be found'}
@@ -114,6 +127,7 @@ class EntertainmentTask(Task):
         self.api = MovieAPI()
         self.more_det = False
         self.response_message = "Here's what I found"
+        self.intent_data = IntentData()
 
     def set_movie(self, movie_id, movie):
         self.movie = movie
@@ -124,9 +138,9 @@ class EntertainmentTask(Task):
         self.tv_id = tv_id
 
     def action(self):
-        if 'title_query' in self.message.entities:
-
-            self.result = self.api.get_title(self.message.entities['title_query'])
+        if self.intent_data.title_entity in self.message.entities:
+            title_entity = self.message.entities[self.intent_data.title_entity]
+            self.result = self.api.get_title(title_entity)
 
             #TODO Implement the full more details function 
             #self.result = self.api.get_query_results(self.message.entities['title_query'])
@@ -239,15 +253,18 @@ class WikiTask(Task):
     def __init__(self, message):
         super().__init__(message)
         self.api = WikiAPI()
+        self.intent_data = IntentData()
 
 
     def action(self):
         #TODO Find a way to diferentiate information from celebs and regular wiki posts
-        if 'celeb_query' in self.message.entities:
-            self.result = self.api.get_celeberty(self.message.entities['celeb_query'])
+        if self.intent_data.celeb_entity in self.message.entities:
+            celeb_entity = self.message.entities[self.intent_data.celeb_entity]
+            self.result = self.api.get_celeberty(celeb_entity)
         
-        elif 'wiki_query' in self.message.entities:
-            self.result = self.api.search_wiki(self.message.entities['wiki_query'])
+        elif self.intent_data.wiki_entity in self.message.entities:
+            wiki_entity = self.message.entities[self.intent_data.wiki_entity]
+            self.result = self.api.search_wiki(wiki_entity)
         
         else:
             self.result = {'error': 'Query type could not be found'}
@@ -271,15 +288,19 @@ class MapTask(Task):
     def __init__(self, message):
         super().__init__(message)
         self.api = MapsAPI()
+        self.intent_data = IntentData()
 
     def action(self):
-        if 'location_query' in self.message.entities:
-            self.result = self.api.search_location(self.message.entities['location_query'])
+        if self.intent_data.location_entity in self.message.entities:
+            location_entity = self.message.entities[self.intent_data.location_entity]
+            self.result = self.api.search_location(location_entity)
 
         elif 'direction_query' in self.message.entities:
+            
             self.result = self.api.search_location(self.message.entities['direction_query'])
 
         elif 'origin_query' in self.message.entities and 'destination_query' in self.message.entities:
+            """TODO: Deal with merging the queries later"""
 
             self.result = self.api.get_directions(self.message.entities['origin_query'], self.message.entities['destination_query'])
 
@@ -302,8 +323,9 @@ class WeatherTask(Task):
         super().__init__(message)
         self.api = WeatherAPI()
         self.response_message = "Here's the weather"
-        if 'weather_location' in self.message.entities:
-            self.location = message.entities['weather_location']
+        self.intent_data = IntentData()
+        if self.intent_data.weather_entity in self.message.entities:
+            self.location = message.entities[self.intent_data.weather_entity]
             self.is_city = (not message.entities['weather_location'].isdigit())
 
         else:

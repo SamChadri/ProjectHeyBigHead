@@ -1,10 +1,12 @@
 from html import entities
+from typing import Any
 from alfred.mongodb.intent_store_m2 import IntentStoreM2
 from alfred.mongodb.intent_data import IntentData
 from alfred.models.task import *
 import os
 import logging
-
+import io
+import json
 from snips_nlu import SnipsNLUEngine
 from snips_nlu.default_configs import CONFIG_EN
 
@@ -20,41 +22,57 @@ class IntentsM2:
     def __init__(self):
         self.data_store = IntentStoreM2()
         self.local_storage = IntentData()
-        self.convert_dataset()
-        self.datset_path = os.path.abspath('alfred/mongodb/intent_datasets/{}_intents_dataset_backup.yaml')
+        self.dataset_path = os.path.abspath('alfred/mongodb/intent_datasets/{}_intents_backup.yaml')
         self.final_dataset = os.path.abspath('alfred/mongodb/intent_datasets/final_dataset.json')
         self.engine_path = os.path.abspath('alfred/data/intent_engines/')
+
+        self.convert_dataset()
         if self.engine_exists():
             self.engine = self.load_engine()
         else:
             self.engine = self.create_engine()
+            self.save_engine()
         
 
     def convert_dataset(self) -> None:
         if not os.path.exists(self.final_dataset):
-            logging.info(f"{TAG} Json dataset for {dataset} does not exist. Creating one in inte_datasets/ directory")
-        
+            logging.info(f"{TAG} Json dataset for {self.final_dataset} does not exist. Creating one in inte_datasets/ directory")
+            
             core_dataset = self.dataset_path.format(self.DATASETS["CORE"])
             expanded_dataset = self.dataset_path.format(self.DATASETS["EXP"])
-            os.system(f"snips-nlu generate-dataset en {core_dataset} {expanded_dataset} > {self.final_dataset}")
+
+            if os.path.exists(expanded_dataset):
+                logging.info(f"{TAG} Creating expanded final dataset...")
+                os.system(f"snips-nlu generate-dataset en {core_dataset} {expanded_dataset} > {self.final_dataset}")
+            else:
+                logging.info(f"{TAG} Creating core final dataset...")
+                os.system(f"snips-nlu generate-dataset en {core_dataset} > {self.final_dataset}")
+
 
     def engine_exists(self) -> bool:
-        return os.path.exists(os.path.join(self.engine_path), 'nlu_engine.json')
+        return os.path.exists(os.path.join(self.engine_path, 'nlu_engine.json'))
 
-    def load_engine(self) -> SnipsNLUEngine:
-        return SnipsNLUEngine.load_from_path(self.engine_path)
+    def load_engine(self) -> Any:
+        logging.info(f"{TAG} Loading engine from path: {self.engine_path}")
+        engine = os.path.exists(os.path.join(self.engine_path, 'nlu_engine.json'))
+        loaded_engine = SnipsNLUEngine.from_path(self.engine_path)
+        return loaded_engine
 
     def save_engine(self) -> None:
+        logging.info(f"{TAG} Saving engine to path: {self.engine_path}")
         self.engine.persist(self.engine_path)
         #TODO: Save to database
 
 
     def create_engine(self) -> SnipsNLUEngine:
+        logging.info(f"{TAG} Creating engine from dataset: {self.final_dataset}")
         engine = SnipsNLUEngine(config=CONFIG_EN, random_state=self.SEED)
-        engine.fit(self.final_dataset)
+        with io.open(self.final_dataset) as f:
+            dataset = json.load(f)
+        engine.fit(dataset)
         return engine
 
-    def get_result(self, data) -> None:
+    def get_result(self, data) -> Any:
         result = self.engine.parse(data)
         if result["intent"] == None:
             retval = Message("None", result["input"], {"entities": "none"}, result["intent"]["probability"])

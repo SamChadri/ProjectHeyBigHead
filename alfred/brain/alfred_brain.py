@@ -3,6 +3,7 @@ from alfred.models.task_handler import TaskHandler
 from alfred.models.task import *
 from alfred.brain.intents import Intents
 from alfred.mongodb.intent_store_m2 import *
+from alfred.brain.intents_m2 import IntentsM2
 import logging
 import json
 
@@ -16,11 +17,11 @@ class AlfredBrain:
 
     def __init__(self):
         self.sst = Decipher()
-        self.intents = Intents()
+        #self.intents = Intents()
         self.req_handler = TaskHandler()
         #self.intents.load_intents()
         #Test Intent store M2
-        self.intent_store = IntentStoreM2()
+        self.intents = IntentsM2()
         #self.intents.generate_containers()
         #self.intents.train_containers()
         #self.intents.train_intents()
@@ -32,14 +33,14 @@ class AlfredBrain:
     def process_req(self, data, audio=True, device_id='076dd3b443fad1d9065c41502a77db37fb8695a8'):
         if audio:
             data = self.sst.decode(data)
-        result = self.intents.get_best_result(data)
+        result = self.intents.get_result(data)
         result.set_device_id(device_id)
         self.req_handler.process_message(result)
 
     def process_intent(self, data, audio=False):
         if audio:
             data = self.sst.decode(data)
-        
+        #TODO: Change this.
         result = self.intents.get_best_result(data)
         return json.dumps({'response_data' : result.__dict__}, default=str)
 

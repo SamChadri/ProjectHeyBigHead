@@ -15,12 +15,19 @@ class Message:
     def set_slot_names(self, slots):
         self.slots = slots
 
-    def check_entity_slot(self, entity) -> str:
+    def get_slot_name(self, entity) -> str:
         entity_value = self.entities[entity]
         for key, val in self.slots:
             if val == entity_value and key != entity:
                 return key
         return entity_value
+    
+    def check_entity_slot(self, entity) -> bool:
+        slot_val = self.get_slot_name(entity)
+        if slot_val == entity:
+            return True
+        else:
+            return False
 
 
 
