@@ -281,32 +281,10 @@ name: map_intent
 slots:
 - entity: location_query
   name: location_query
-- entity: city
-  name: destination_city
-- entity: snips/number
-  name: destination_address
-- entity: destination_street
-  name: destination_street
-- entity: region
-  name: destination_region
-- entity: snips/number
-  name: destination_zipcode
-- entity: country
-  name: destination_country
-- entity: city
-  name: origin_city
-- entity: snips/number
-  name: origin_address
-- entity: origin_street
-  name: origin_street
-- entity: region
-  name: origin_region
-- entity: snips/number
-  name: origin_zipcode
-- entity: country
-  name: origin_country
-- entity: road_type
-  name: road_type
+- entity: address
+  name: destination_query
+- entity: address
+  name: origin_query
 type: intent
 utterances:
 - What's a good [location_query](sushi) restaurant near me
@@ -315,116 +293,41 @@ utterances:
 - Get me directions to the nearest [location_query]
 - Show me directions to the nearest [location_query]
 - What's the traffic like to the nearest [location_query]
-- What's the traffic like to [destination_city]
-- What's the traffic like to [destination_address] [destination_street](Wenonah) [road_type]
-- What's the traffic like to [destination_address] [destination_street](Clinton) [road_type],
-  [destination_city], [destination_region]
-- What's the traffic like to [destination_address] [destination_street] [road_type],
-  [destination_zipcode] [destination_region]
-- What's the traffic like to [destination_address] [destination_street] [road_type],
-  [destination_zipcode] [destination_region], [destination_country]
-- Take me to [destination_address] [destination_street] [road_type]
-- Take me to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Take me to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Take me to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region], [destination_country]
-- Give me directions to [destination_address] [destination_street] [road_type]
-- Give me directions to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Give me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Give me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region], [destination_country]
-- Get me directions to [destination_address] [destination_street] [road_type]
-- Get me directions to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Get me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Get me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region], [destination_country]
-- Find me directions to [destination_address] [destination_street] [road_type]
-- Find me directions to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Find me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Find me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region], [destination_country]
-- Show me directions to [destination_address] [destination_street] [road_type]
-- Show me directions to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Show me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Show me directions to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region], [destination_country]
-- Can you get me directions to [destination_address] [destination_street] [road_type]
-- Can you get me directions to [destination_address] [destination_street] [road_type],
-  [destination_city], [destination_region]
-- Can you get me directions to [destination_address] [destination_street] [road_type],
-  [destination_zipcode] [destination_region]
-- Can you get me directions to [destination_address] [destination_street] [road_type],
-  [destination_zipcode] [destination_region], [destination_country]
-- Get me directions from [origin_city] to [destination_city]
-- Get me directions from [origin_address] [origin_street] [road_type] to [destination_address]
-  [destination_street] [road_type]
-- Get me directions from [origin_address] [origin_street] [road_type], [origin_city],
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Get me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Get me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
-  [origin_region], [origin_country] to [destination_address] [destination_street]
-  [road_type], [destination_zipcode] [destination_region], [destination_country]
-- Find me directions from [origin_city] to [destination_city]
-- Find me directions from [origin_address] [origin_street] [road_type] to [destination_address]
-  [destination_street] [road_type]
-- Find me directions from [origin_address] [origin_street] [road_type], [origin_city],
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Find me directions from [origin_address] [origin_street](Ridgeland) [road_type],
-  [origin_zipcode] [origin_region] to [destination_address] [destination_street] [road_type],
-  [destination_zipcode] [destination_region]
-- Find me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
-  [origin_region], [origin_country] to [destination_address] [destination_street]
-  [road_type], [destination_zipcode] [destination_region], [destination_country]
-- Show me directions from [origin_city] to [destination_city]
-- Show me directions from [origin_address] [origin_street] [road_type] to [destination_address]
-  [destination_street] [road_type]
-- Show me directions from [origin_address] [origin_street] [road_type], [origin_city],
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Show me directions from [origin_address] [origin_street](Lake) [road_type], [origin_zipcode]
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Show me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
-  [origin_region], [origin_country] to [destination_address] [destination_street]
-  [road_type], [destination_zipcode] [destination_region], [destination_country]
-- Give me directions from [origin_city] to [destination_city]
-- Give me directions from [origin_address] [origin_street] [road_type] to [destination_address]
-  [destination_street] [road_type]
-- Give me directions from [origin_address] [origin_street](Circle) [road_type], [origin_city],
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Give me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Give me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
-  [origin_region], [origin_country] to [destination_address] [destination_street]
-  [road_type], [destination_zipcode] [destination_region], [destination_country]
-- Can you get me directions from [origin_city] to [destination_city]
-- Can you get me directions from [origin_address] [origin_street](Harlem) [road_type]
-  to [destination_address] [destination_street] [road_type]
-- Can you get me directions from [origin_address] [origin_street] [road_type], [origin_city],
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_city],
-  [destination_region]
-- Can you get me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
-  [origin_region] to [destination_address] [destination_street] [road_type], [destination_zipcode]
-  [destination_region]
-- Can you get me directions from [origin_address] [origin_street] [road_type], [origin_zipcode]
-  [origin_region], [origin_country] to [destination_address] [destination_street]
-  [road_type], [destination_zipcode] [destination_region], [destination_country]
+- What's the traffic like to [destination_query]
+- Take me to [destination_query]
+- Give me directions to [destination_query]
+- Get me directions to [destination_query]
+- Find me directions to [destination_query]
+- Show me directions to [destination_query]
+- Can you get me directions to [destination_query]
+- Get me directions from [origin_query] to [destination_query]
+- Find me directions from [origin_query] to [destination_query]
+- Show me directions from [origin_query] to [destination_query]
+- Give me directions from [origin_query] to [destination_query]
+- Can you get me directions from [origin_query] to [destination_query]
+
+---
+
+name: address
+type: entity
+values:
+  - San Fransisco
+  - Hyde Park
+  - Chicago
+  - 233 S Wacker Dr
+  - 698 Candlewood Lane, Cabot Cove, Maine
+  - 350 Fifth Avenue, New York City, NY 10118
+  - 742 Evergreen Terrace, Springfield, USA
+  - 30 St Mary Axe, London
+  - Champ de Mars, 5 Av. Anatole France, 75007 Paris, France
+  - 23 Rue de Grenell, 75700 PARIS CEDEX
+  - Mimbreras 4, 03201 ELCHE (Alicante), SPAIN
+  - 45 O'Connell Street, DUBLIN 1, REPUBLIC OF IRELAND
+  - 1600 Pennsylvania Avenue, Washington, D.C., USA
+  - Saint Martha House, 00120 Citta del Vaticano, Vatican City
+  - 245 East 73rd Street
+  - 29 Acacia Road
+  - 46 Peacock Crescent, Hampton Wick
 ---
 name: country
 type: entity

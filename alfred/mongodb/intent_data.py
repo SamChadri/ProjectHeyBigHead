@@ -40,7 +40,7 @@ class IntentData:
     artist_entity : str = 'artist_query'
     volume_entity : str = 'volume_query'
     playlist_entity : str = 'playlist_query'
-    type_entity : str = 'type_query'
+    music_type_entity : str = 'music_type_query'
     skip_entity : str = 'skip_query'
     calendar_task_entity: str = "calendar_query"
     calendar_event_entity: str = 'event_type'
@@ -63,6 +63,8 @@ class IntentData:
     country_entity:str = "country"
     region_entity:str = "region"
     road_type_entity:str = "road_type"
+    address_entity:str = "address"
+    music_entity:str = "music"
 
 
 
@@ -82,6 +84,7 @@ class IntentData:
         self.__intent_data[self.time_intent] = "time_intents"
         self.__intent_data[self.wiki_intent] = "wiki_intents"
         self.__intent_data[self.spotify_player_intent] = "spotify_intents"
+        self.__intent_data[self.spotify_intent] = "spotify_intents"
         self.__intent_data[self.calendar_intent] = "calendar_intents"
 
 
@@ -101,7 +104,7 @@ class IntentData:
         self.__entity_data[self.artist_entity] = "spotify_intents"
         self.__entity_data[self.volume_entity] = "spotify_intents"
         self.__entity_data[self.playlist_entity] = "spotify_intents"
-        self.__entity_data[self.type_entity] = "spotify_intents"
+        self.__entity_data[self.music_type_entity] = "spotify_intents"
         self.__entity_data[self.skip_entity] = "spotify_intents"
         self.__entity_data[self.calendar_task_entity] = "calendar_intents"
         self.__entity_data[self.calendar_event_entity] = "calendar_intents"
@@ -125,6 +128,8 @@ class IntentData:
         self.__entity_data[self.country_entity] = "map_intents"
         self.__entity_data[self.region_entity] = "map_intents"
         self.__entity_data[self.road_type_entity] = "map_intents"
+        self.__entity_data[self.address_entity] = "map_intents"
+        self.__entity_data[self.music_entity] = "spotify_intents"
 
 
 

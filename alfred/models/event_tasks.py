@@ -299,10 +299,10 @@ class MapTask(Task):
             
             self.result = self.api.search_location(self.message.entities['direction_query'])
 
-        elif 'origin_query' in self.message.entities and 'destination_query' in self.message.entities:
+        elif self.intent_data.origin_entity in self.message.slots and self.intent_data.dest_entity in self.message.slots:
             """TODO: Deal with merging the queries later"""
 
-            self.result = self.api.get_directions(self.message.entities['origin_query'], self.message.entities['destination_query'])
+            self.result = self.api.get_directions(self.intent_data.origin_entity, self.intent_data.dest_entity)
 
         else:
            self.result = {'error': 'Query type could not be found'}
@@ -379,18 +379,20 @@ class SpotifyTask(Task):
 
         #TODO Add case for when a device instance is being used.
         self.api = SpotifyAPI.acquire(self.message.device_id)
+        self.intent_data = IntentData()
         logging.debug(TAG + 'SpotifyTask Created')
         print(TAG + 'SpotifyTask Created')
         self.response_message = 'Opening Spotfiy'
     
 
     def action(self):
-        if 'player_query' in self.message.entities:
+        if self.intent_data.player_entity in self.message.entities:
+            player_entity = self.message.entities[self.intent_data.player_entity]
             logging.info(TAG + 'SpotifyTask - Player Query...')
             print(TAG + 'SpotifyTask - Player Query...')
-            if 'track_query' in self.message.entities and 'artist_query' in self.message.entities:
-                track_query = self.message.entities['track_query']
-                artist_query = self.message.entities['artist_query']
+            if self.intent_data.track_entity in self.message.slots and self.intent_data.artist_entity in self.message.entities:
+                track_query = self.message.slots[self.intent_data.track_entity]
+                artist_query = self.message.entities[self.intent_data.artist_entity]
                 query_string = f'{track_query} artist:{artist_query}' 
                 type_query = 'track,album'
 
@@ -399,11 +401,11 @@ class SpotifyTask(Task):
                     self.result = track_uri 
                     return 
 
-                self.result = self.api.spotify_request(self.message.intent, self.message.entities['player_query'], track_uri=track_uri)
+                self.result = self.api.spotify_request(self.message.intent, player_entity , track_uri=track_uri)
 
-            elif 'artist_query' in self.message.entities and 'type_query' in self.message.entities:
-                artist_query = self.message.entities['artist_query']
-                type_query = self.message.entities['type_query']
+            elif self.intent_data.artist_entity in self.message.entities and self.intent_data.music_type_entity in self.message.entities:
+                artist_query = self.message.entities[self.intent_data.artist_entity]
+                type_query = self.message.entities[self.intent_data.music_type_entity]
                 query_string = f'artist:{artist_query}'
 
                 track_uri = self.api.spotify_search(query_string, type_query)
@@ -411,10 +413,10 @@ class SpotifyTask(Task):
                     self.result = track_uri 
                     return 
 
-                self.result = self.api.spotify_request(self.message.intent, self.message.entities['player_query'], track_uri=track_uri)
+                self.result = self.api.spotify_request(self.message.intent, player_entity , track_uri=track_uri)
 
-            elif 'track_query' in self.message.entities:
-                track_query = self.message.entities['track_query']
+            elif self.intent_data.track_entity in self.message.slots:
+                track_query = self.message.slots[self.intent_data.track_entity]
                 query_string = f'{track_query}' 
                 type_query = 'track,album'
 
@@ -423,10 +425,10 @@ class SpotifyTask(Task):
                     self.result = track_uri 
                     return 
 
-                self.result = self.api.spotify_request(self.message.intent, self.message.entities['player_query'], track_uri=track_uri)
+                self.result = self.api.spotify_request(self.message.intent, player_entity , track_uri=track_uri)
 
-            elif 'artist_query' in self.message.entities:
-                artist_query = self.message.entities['artist_query']
+            elif self.intent_data.artist_entity in self.message.entities:
+                artist_query = self.message.entities[self.intent_data.artist_entity]
                 query_string = f'artist:{artist_query}'
                 query_type = 'track,album'
 
@@ -435,26 +437,26 @@ class SpotifyTask(Task):
                     self.result = track_uri 
                     return 
 
-                self.result = self.api.spotify_request(self.message.intent, self.message.entities['player_query'], track_uri=track_uri)
+                self.result = self.api.spotify_request(self.message.intent, player_entity , track_uri=track_uri)
 
-            elif 'playlist_query' in self.message.entities:
+            elif self.intent_data.playlist_entity in self.message.slots:
 
-                playlist_query = self.message.entities['playlist_query']
+                playlist_query = self.message.playlist_entity[self.intent_data.playlist_entity]
                 playlist_uri = self.api.spotify_playlists(playlist_query)
 
                 if type(playlist_uri) == dict:
                     self.result = playlist_uri
                     return
 
-                self.result = self.api.spotify_request(self.message.intent, self.message.entities['player_query'], track_uri=playlist_uri)
+                self.result = self.api.spotify_request(self.message.intent, player_entity , track_uri=playlist_uri)
 
             else:
-                self.result = self.api.spotify_request(self.message.intent, self.message.entities['player_query'])
+                self.result = self.api.spotify_request(self.message.intent, player_entity )
 
-        elif 'volume_query' in self.message.entities:
+        elif self.intent_data.volume_entity in self.message.entities:
             self.result = self.api.spotify_request(self.message.intent, volume_level=self.message.entities['volume_query'])
 
-        elif 'skip_query' in self.message.entities:
+        elif self.intent_data.skip_entity in self.message.entities:
             self.result = self.api.spotify_request(self.message.intent, self.message.entities['skip_query'])
 
         else:
@@ -497,37 +499,37 @@ class CalendarTask(Task):
 
     
     def action(self):
-        if 'calendar_query' in self.message.entities:
-            query = self.message.entities['calendar_query']
+        if 'calendar_query' in self.message.slots:
+            query = self.message.slots['calendar_query']
             print(f'Calendar query in entities {query}')
             if query.lower() == 'Add'.lower() or query.lower() == 'Schedule'.lower():
                 print('Add command found')
-                self.result = self.api.create_event(**self.message.entities)
+                self.result = self.api.create_event(**self.message.slots)
                 self.query = self.CREATE_QUERY
             elif query.lower() == 'where is' or query.lower() == "where's":
-                self.result = self.api.get_events(**self.message.entities)
+                self.result = self.api.get_events(**self.message.slots)
                 self.query = self.WHERE_QUERY
                 #TODO  add instance variable to determine the type of calendar_query
                 #TODO (handle in response) get location out of the result from api
 
             elif query.lower() == 'when is' or query.lower() == "when's":
-                self.result = self.api.get_events(**self.message.entities)
+                self.result = self.api.get_events(**self.message.slots)
                 self.query = self.WHEN_QUERY
                 #TODO  add instance variable to determine the type of calendar_query
                 #TODO (handle in response) get the time out of the result from api call
                 pass
 
             elif query.lower() == 'what is' or query.lower() == "what's":
-                self.result = self.api.get_events(**self.message.entities)
+                self.result = self.api.get_events(**self.message.slots)
                 self.query = self.GET_QUERY
                 pass
 
             elif query.lower() == 'update' or query.lower() == 'reschedule':
-                self.result = self.api.update_event(**self.message.entities)
+                self.result = self.api.update_event(**self.message.slots)
                 self.query = self.UPDATE_QUERY
 
             elif query.lower() == 'cancel':
-                self.result = self.api.delete_event(**self.message.entities)
+                self.result = self.api.delete_event(**self.message.slots)
                 self.query = self.CANCEL_QUERY
             else:
                 pass

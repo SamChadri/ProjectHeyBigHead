@@ -95,7 +95,7 @@ class TaskHandler:
             logging.debug(TAG + f'Intent: {intent}. Creating WikiTask to be processed')
             task = WikiTask(message)
 
-        elif intent == intent_data.spotify_player_intent:
+        elif intent == intent_data.spotify_player_intent or intent == intent_data.spotify_intent:
             logging.debug(TAG + f'Intent: {intent}. Creating SpotifyTask to be processed')
             task = SpotifyTask(message)
             print('Spotify Task created')

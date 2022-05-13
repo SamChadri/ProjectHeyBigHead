@@ -79,17 +79,25 @@ class IntentsM2:
             return retval
     
         entities = {}
+        extra_entities = {}
         slots = {}
         for slot in result["slots"]:
             entity = slot["entity"]
             slot_name = slot["slotName"]
             value = slot["value"]["value"]
-            entities[entity] = value
+            if entity in entities:
+                if entity not in extra_entities:
+                    extra_entities[entity] = []
+                extra_entities[entity].append(value)
+            else:
+                entities[entity] = value
+            
             slots[slot_name] = value
 
 
         retval = Message(result["intent"]["intentName"],result["input"],entities, result["intent"]["probability"])
         retval.set_slot_names(slots)
+        retval.set_extra_entities(extra_entities)
         logging.debug(TAG + "Generated message: " + str(retval))
 
         return retval

@@ -35,10 +35,9 @@ class IntentStoreM2:
         self.intent_constants = IntentData()
         self.init_collections()
         
-        self.metadata_file = self.create_metadata(self.CORE)
-
         self.api_store = APIStore()        
         self.init_db()
+
     
     def init_collections(self) -> None:
         mongo_client = pymongo.MongoClient(os.environ['MONGO_IP'])
@@ -58,19 +57,36 @@ class IntentStoreM2:
     def init_db(self) -> None:
         if not self.check_db():
             logging.info(TAG + "Intent database not initialized")
-            self.populate_db()
+            self.populate_db(file_type=self.CORE)
+            self.populate_db(file_type=self.EXPANDED)
             self.api_store.init_database()
+            self.cd_metadata_file = self.create_metadata(self.CORE)
+            self.exp_metadata_file = self.create_metadata(self.EXPANDED)
+            
 
         else:
             logging.info(TAG + "Intent database already intitialized")
-            self.check_updates()
+            self.cd_metadata_file = self.create_metadata(self.CORE)
+            self.exp_metadata_file = self.create_metadata(self.EXPANDED)
+            self.check_updates(file_type=self.CORE)
+            self.check_updates(file_type=self.EXPANDED)
     
-    def populate_db(self)-> None:
-        logging.info(f"{TAG} Populating database...")
-    
+    def populate_db(self, file_type=None)-> None:
+        logging.info(f"{TAG} Populating database for file type {file_type}...")
+
         data : list
-        with open(self.core_intent_file,'r') as file:
+
+        data_file: str
+        if file_type == self.CORE:
+            data_file = self.core_intent_file
+            pass
+        else:
+            data_file = self.ex_intent_file
+            pass
+
+        with open(data_file,'r') as file:
             data = list(yaml.load_all(file, Loader=yaml.FullLoader))
+
         for document in data:
             collection_name = ""
             if document["type"] == "intent":
@@ -96,9 +112,10 @@ class IntentStoreM2:
         meta_file = os.path.abspath('alfred/mongodb/intent_datasets/{}_meta.json').format(file)
 
         if os.path.exists(meta_file):
+            logging.info(f"{TAG} Metafile already exists at path {meta_file}")
             return meta_file
         
-        
+        logging.info(f"{TAG} Creating new metadata file for file type: {file}...")
         data_file : str
         if file == self.CORE:
             data_file = self.core_intent_file
@@ -137,22 +154,27 @@ class IntentStoreM2:
             
 
     
-    def check_updates(self, file=None)-> None:
-        #TODO: Check for deletions next. Do this by creating a metadata and keeping track of that locally and in the database.
-        logging.info(f"{TAG} Checking for intent and entity updates....")
-
+    def check_updates(self, file_type=None)-> None:
+        #TODO: Check for updates next. Do this by creating a metadata and keeping track of that locally and in the database.
+        logging.info(f"{TAG} Checking for intent and entity updates in {file_type}....")
+        
         update = {
             "database": False,
             "file": False,
             "meta": False,
         }
-
+        data_file : str
+        meta_file = os.path.abspath('alfred/mongodb/intent_datasets/{}_meta.json').format(file_type)
+        if file_type == self.CORE:
+            data_file = self.core_intent_file
+        else:
+            data_file = self.ex_intent_file
         data: list 
-        with open(self.core_intent_file,'r') as file:
+        with open(data_file,'r') as file:
             data = list(yaml.load_all(file, Loader=yaml.FullLoader))
         
         metadata: list
-        with open(self.metadata_file, 'r') as file:
+        with open(meta_file, 'r') as file:
             metadata = json.load(file)
         
         
@@ -271,10 +293,10 @@ class IntentStoreM2:
             logging.info(f"{TAG} Finalized databse update...")
             pass
         if update["meta"]:
-            logging.info(f"{TAG} Finalizing updates to metadata file....")
-            with open(self.metadata_file, 'w') as outfile:
+            logging.info(f"{TAG} Finalizing updates to {file_type} metadata file....")
+            with open(meta_file, 'w') as outfile:
                 json.dump(metadata, outfile,indent=4)
-        if not update["file"] and update["database"]:
+        if not update["file"] and not update["database"]:
             logging.info(f"{TAG} No changes detected. No updates performed")
 
 

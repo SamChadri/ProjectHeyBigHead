@@ -429,7 +429,7 @@ class IntentStore:
         }
 
         type_entity = {
-            'entity': cls.intent_constants.type_entity,
+            'entity': cls.intent_constants.music_type_entity,
             'entity_values' : [
                 'album',
                 'single'

@@ -393,7 +393,7 @@ def test_calendar_intent(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "calendar"
+    assert intent["intent"] == "calendar_intent"
 
     calendar_data = intent["result"]
 
@@ -421,7 +421,7 @@ def test_calendar_intent_occurence(client):
     assert "intent" in intent
     assert "id" in intent
 
-    assert intent["intent"] == "calendar"
+    assert intent["intent"] == "calendar_intent"
 
     calendar_data = intent["result"]
 
@@ -477,6 +477,8 @@ def test_calendar_intent_time_1(client):
     assert "result" in intent
     assert "intent" in intent
     assert "id" in intent
+
+    assert intent["intent"] == "calendar_intent"
 
     calendar_data = intent["result"]
 
@@ -543,6 +545,8 @@ def test_calendar_intent_time_2(client):
     assert "result" in intent
     assert "intent" in intent
     assert "id" in intent
+
+    assert intent["intent"] == "calendar_intent"
     
 
     calendar_data = intent["result"]

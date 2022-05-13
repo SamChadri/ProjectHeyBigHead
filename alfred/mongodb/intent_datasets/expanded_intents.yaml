@@ -1,0 +1,365 @@
+#Spotify Intent
+
+type: intent
+name: spotify_intent
+slots:
+  - name: player_query
+    entity: player_query
+  - name: playlist_query
+    entity: music
+  - name: track_query
+    entity: music
+  - name: artist_query
+    entity: artist_query
+  - name: music_type
+    entity: music_type
+  - name: volume_query
+    entity: volume_query
+  - name: skip_query
+    entity: skip_query
+utterances:
+  - "[player_query] this song"
+  - "[player_query] the current song"
+  - Get the [player_query] for the current session
+  - "[player_query] the current session"
+  - Toggle the [player_query] for the current session
+  - Set the volume to [volume_query]
+  - "[player_query] my [playist_query]"
+  - "[player_query] my [playlist_query] playlist"
+  - "[player_query] some [artist_query]"
+  - Play the [skip_query] song
+  - "[player_query] [track_query]"
+  - "[player_query] [track_query] by [artist_query]"
+  - "[player_query] [artist_query]'s latest [music_type]"
+
+
+
+
+---
+#Player Query Entity
+type: entity
+name: player_query
+values:
+  - play
+  - start
+  - resume
+  - pause
+  - skip
+  - queue
+  - repeat
+  - shuffle
+  - repeat
+  - transfer
+
+
+---
+#Artist Query Entity
+type: entity
+name: artist_query
+values:
+  - Drake
+  - Bryson Tiller
+  - Jack Harlow
+  - Adele
+  - The Weeknd
+  - The Beatles
+  - Fleetwood Mac
+  - Lady Gaga
+  - Beyonce
+  - AC/DC
+  - Guns N'Roses
+  - Pink Floyd
+  - Maroon 5
+  - J.Cole
+  - Madonna
+  - U2
+  - Justin Timberlake
+  - Eric Clapton
+  - Bob Dylan
+
+
+---
+#Music Type Entity
+type: entity
+name: music_type_query
+values:
+  - ablum
+  - single 
+  - playlist
+  - [EP,ep, E.P.]
+
+---
+#Music Entity
+type: entity
+name: music
+values:
+  - 7AM on Bridle Path
+  - Despacito
+  - Call Me Maybe
+  - Get Lucky
+  - Hey Ya!
+  - Blurred Lines
+  - Rolling in the Deep
+  - Stronger
+  - What a Wonderful world
+  - House of Balloons
+  - Hype
+  - Single Ladies
+  - Hotline Bling
+  - Bootylicious
+  - A Change Is Gonna Come
+  - Ignition (Remix)
+  - Cry Me a River
+  - If You're Reading This It's Too Late
+  - Off the Wall
+  - Thriller
+  - Back in Black
+  - Playlist 1
+  - Playlist 2
+  - My Mix 3
+  - Daily Mix 4
+  - Daily Mix 5
+  - Hip Hop Mix 
+  - R&B Mix
+  - Pop Mix
+  - Soul Mix
+  - Blues Mix
+  - 2010s Mix
+  - 2000s Mix
+  - 70s Mix
+  - MIH-TY
+  - Workout
+  - Rap
+  - True to Self
+
+---
+#Volume Entity
+type: entity
+name: volume_entity
+values:
+  - zero
+  - low 
+  - medium
+  - high
+  - max
+
+#Calendar Intent
+
+---
+type: intent
+name: calendar_intent
+slots:
+  - name: calendar_query
+    entity: calendar_query
+  - name: event_type
+    entity: event_type
+  - name: calendar_date
+    entity: snips/datetime
+  - name: calendar_attendee
+    entity: calendar_attendee
+  - name: calendar_start_time
+    entity: snips/datetime
+  - name: calendar_end_time
+    entity: snips/datetime
+  - name: event_type
+    entity: event_type
+  - name: event_num
+    entity: event_num
+  - name: calendar_frequency
+    entity: calendar_frequency
+  - name: calendar_frequency_num
+    entity: snips/number
+  - name: calendar_param
+    entity: calendar_param
+  - name: calendar_update
+    entity: calendar_update
+utterances:
+  - "[calendar_query] a [event_type] to my calendar"
+  - "[calendar_query] an [event_type] to my calendar"
+  - "[calendar_query] a [event_type] for me"
+  - "[calendar_query] an [event_type] for me"
+  - "[calendar_query] a [event_type] to my calendar every [calendar_frequency]"
+  - "[calendar_query] a [event_type] to my calendar every [calendar_frequency] for [calendar_frequency_num] occurrences"
+  - "[calendar_query] a [event_type] to my calendar every [calendar_frequency] for [calendar_frequency_num] days"
+  - "[calendar_query] a [event_type] to my calendar every [calendar_frequency] for [calendar_frequency_num] weeks"
+  - "[calendar_query] a [event_type] to my calendar every [calendar_frequency] for [calendar_frequency_num] months"
+  - "[calendar_query] a [event_type] to my calendar every [calendar_frequency] for [calendar_frequency_num] years"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee]"
+  - "[calendar_query] an [event_type] to my calendar with [calendar_attendee](David)"
+  - "[calendar_query] a [event_type] for me with [calendar_attendee](Colleen)"
+  - "[calendar_query] an [event_type] for with [calendar_attendee](Katie)"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee](Thomas) every [calendar_frequency]"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee] every [calendar_frequency] for [calendar_frequency_num] occurrences"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee](Marquees Brownlee) every [calendar_frequency] for [calendar_frequency_num] days"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee] every [calendar_frequency] for [calendar_frequency_num] weeks"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee](Devonte) every [calendar_frequency] for [calendar_frequency_num] months"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee](Dequan Davis) every [calendar_frequency] for [calendar_frequency_num] years"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date]"
+  - "[calendar_query] an [event_type] to my calendar at [calendar_date]"
+  - "[calendar_query] a [event_type] for me on [calendar_date]"
+  - "[calendar_query] an [event_type] for me at [calendar_date]"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every [calendar_frequency]"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every [calendar_frequency] for [calendar_frequency_num] occurrences"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every [calendar_frequency] for [calendar_frequency_num] days"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every [calendar_frequency] for [calendar_frequency_num] weeks"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every [calendar_frequency] for [calendar_frequency_num] months"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every [calendar_frequency] for [calendar_frequency_num] years"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] with [calendar_attendee]"
+  - "[calendar_query] a [event_type] for me on [calendar_date] with [calendar_attendee]"
+  - "[calendar_query] an [event_type] to my calendar on [calendar_date] with [calendar_attendee]"
+  - "[calendar_query] an [event_type] for me on [calendar_date] with [calendar_attendee]"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] with [calendar_attendee] every [calendar_frequency]"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every with [calendar_attendee] every [calendar_frequency] for [calendar_frequency_num] occurrences"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every with [calendar_attendee] every [calendar_frequency] for [calendar_frequency_num] days"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every with [calendar_attendee] every [calendar_frequency] for [calendar_frequency_num] weeks"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every with [calendar_attendee] every [calendar_frequency] for [calendar_frequency_num] months"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] every with [calendar_attendee] every [calendar_frequency] for [calendar_frequency_num] years"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] between [calendar_start_time] and [calendar_end_time]"
+  - "[calendar_query] a [event_type] for me on [calendar_date] between [calendar_start_time] and [calendar_end_time]"
+  - "[calendar_query] an [event_type] to my calendar on [calendar_date] between [calendar_start_time] and [calendar_end_time]"
+  - "[calendar_query] an [event_type] for me on [calendar_date] between [calendar_start_time] and [calendar_end_time]"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency]"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] occurrences"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] days"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] weeks"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] months"
+  - "[calendar_query] a [event_type] to my calendar on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] years"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee] on [calendar_date] between [calendar_start_time] and [calendar_end_time]"
+  - "[calendar_query] a [event_type] for me with [calendar_attendee] on [calendar_date] between [calendar_start_time] and [calendar_end_time]"
+  - "[calendar_query] an [event_type] to my calendar with [calendar_attendee] on [calendar_date] between [calendar_start_time] and [calendar_end_time]"
+  - "[calendar_query] an [event_type] for me with [calendar_attendee] on [calendar_date] between [calendar_start_time] and [calendar_end_time]"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee] on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency]"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee](Grant Rose) on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] occurrences"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee] on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] days"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee] on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] weeks"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee](Riley Walker) on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] months"
+  - "[calendar_query] a [event_type] to my calendar with [calendar_attendee] on [calendar_date] between [calendar_start_time] and [calendar_end_time] every [calendar_frequency] for [calendar_frequency_num] years"
+  - "[calendar_query] my [event_num] [event_type]"
+  - "[calendar_query] my [event_num] [event_type] with [calendar_search]"
+  - "[calendar_query] my [event_num] [event_type] for [calendar_date]"
+  - "[calendar_query] my [event_num] [event_type] on [calendar_date]"
+  - "[calendar_query] my [event_num] [event_type] at [calendar_search]"
+  - "[calendar_query] my [event_num] [event_type] for [calendar_date] with [calendar_search]"
+  - "[calendar_query] my [event_num] [event_type] on [calendar_date] at [calendar_search]"
+  - "[calendar_query] my [event_num] [event_type] for [calendar_date] with [calendar_search]"
+  - "[calendar_query] my [event_num] [event_type] for [calendar_date] at [calendar_search]"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update](Paris)"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update] for [calendar_date]"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update] on [calendar_date]"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update] with [calendar_search](Sarah Jessica)"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update] at [calendar_search](the office)"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update](Yellow) with [calendar_search] for [calendar_date]"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update](5pm) with [calendar_search] on [calendar_date]"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update] at [calendar_search](the park) for [calendar_date]"
+  - "[calendar_query] my [event_num] [event_type] [calendar_param] to [calendar_update](Tuesday) at [calendar_search](John Foster) on [calendar_date]"
+
+
+
+---
+#Calendar Query Entity
+
+type: entity
+name: calendar_query
+values:
+  - Add 
+  - Create
+  - When is
+  - When's
+  - What is
+  - Where is
+  - Where's
+  - What's
+  - Update
+  - Cancel
+  - Reschedule
+
+---
+
+# Event Type Entity
+
+type: entity
+name: event_type
+values:
+  - meeting
+  - event
+  - appointment
+
+---
+
+#Calendar Frequency Entity
+
+type: entity
+name: calendar_frequency
+values:
+  - daily
+  - weekly
+  - monthly
+  - yearly
+  - minutely
+  - secondly
+  - day
+  - week
+  - month
+  - year
+  - other day
+  - other week
+  - other month
+  - other year
+
+
+---
+
+#Calendar Param Entity
+
+type: entity
+name: calendar_param
+values:
+  - location
+  - attendee list
+  - guests
+  - guest list
+  - notification
+  - color
+  - default color
+  - reminder
+  - popup
+  - email reminder
+  - description
+  - title
+  - start time
+  - start date
+  - event type
+  - type
+  - start
+  - end time
+  - end date
+  - end
+  - frequency
+
+---
+
+#Calendar Event Number Entity
+
+type: entity
+name: event_num
+values:
+  - next
+  - next two
+  - next three
+  - next four
+  - next five
+  - next six
+  - next seven
+  - first
+  - second
+  - third
+  - fourth
+  - fifth
+  - sixth
+  - seveth
+  - eigth
+  - ninth
+  - last
+  - second to last
+  - agenda
+  - schedule

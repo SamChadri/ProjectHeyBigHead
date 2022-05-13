@@ -11,10 +11,15 @@ class Message:
         self.msg = msg
         self.confidence = confidence 
         self.entities = entities
+        self.extra_entities = {}
         
     def set_slot_names(self, slots):
         self.slots = slots
-
+    
+    def set_extra_entities(self, extras):
+        self.extra_entities = extras
+            
+    #TODO Think about how to edit this later.
     def get_slot_name(self, entity) -> str:
         entity_value = self.entities[entity]
         for key, val in self.slots:
